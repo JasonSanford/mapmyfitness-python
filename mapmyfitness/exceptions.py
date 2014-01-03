@@ -1,7 +1,3 @@
-class InvalidAPIVersionException(Exception):
-    """An invalid API version was passed."""
-
-
 class NotFoundException(Exception):
     """The resource could not be found."""
 

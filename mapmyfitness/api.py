@@ -2,21 +2,20 @@ import json
 
 import requests
 
-from .exceptions import InvalidAPIVersionException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException
+from .exceptions import UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException
 from .validators import RouteValidator
 
 supported_versions = ['7.0']
 
 
 class APIConfig(object):
-    uri_root = 'https://api.mapmyapi.com'
+    uri_root = 'https://oauth2-api.mapmyapi.com'
 
-    def __init__(self, access_token, version='7.0'):
-        if version not in supported_versions:
-            raise InvalidAPIVersionException
+    def __init__(self, api_key, access_token):
 
+        self.api_key = api_key
         self.access_token = access_token
-        self.api_root = '{0}/v{1}'.format(self.uri_root, version)
+        self.api_root = '{0}/v7.0'.format(self.uri_root)
 
 
 class BaseAPI(object):
@@ -29,7 +28,7 @@ class BaseAPI(object):
     def __init__(self, api_config):
         self.api_config = api_config
 
-    def all(self, params=None):
+    def all(self, params=None, **kwargs):
         api_resp = self.call('get', self.path, params=params)
         return api_resp
 
@@ -51,7 +50,10 @@ class BaseAPI(object):
 
     def call(self, method, path, data=None, extra_headers=None, params=None):
         full_path = self.api_config.api_root + path
-        headers = {'Authorization': 'access_token {0}'.format(self.api_config.key)}
+        headers = {
+            'Api-Key': self.api_config.api_key,
+            'Authorization': 'Bearer {0}'.format(self.api_config.access_token)
+        }
         if extra_headers is not None:
             headers.update(extra_headers)
         
