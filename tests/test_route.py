@@ -4,9 +4,6 @@ from mapmyfitness.exceptions import InvalidSearchArgumentsException
 
 from tests import MapMyFitnessTestCase
 
-# route 400
-obj = {u'_diagnostics': {u'validation_failures': [[u'a filter is required: (user, users, close_to_location)']]}, u'_links': {u'self': [{u'href': u'/v7.0/route/?limit=20&offset=0'}], u'documentation': [{u'href': u'https://developer.mapmyapi.com/docs/Route'}]}}
-
 
 class RouteTest(MapMyFitnessTestCase):
     def test_no_filter(self):
