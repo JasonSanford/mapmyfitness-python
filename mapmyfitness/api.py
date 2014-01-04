@@ -2,10 +2,8 @@ import json
 
 import requests
 
-from .exceptions import UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException
+from .exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
 from .validators import RouteValidator
-
-supported_versions = ['7.0']
 
 
 class APIConfig(object):
@@ -20,7 +18,8 @@ class APIConfig(object):
 
 class BaseAPI(object):
     http_exception_map = {
-        401: UnauthorizedException,
+        400: BadRequestException,
+        403: UnauthorizedException,
         404: NotFoundException,
         500: InternalServerErrorException,
     }
@@ -28,13 +27,17 @@ class BaseAPI(object):
     def __init__(self, api_config):
         self.api_config = api_config
 
-    def all(self, params=None, **kwargs):
-        api_resp = self.call('get', self.path, params=params)
+    def all(self, **kwargs):
+        if hasattr(self, 'validator_class'):
+            self.validator = self.validator_class(searching_kwargs=kwargs)
+            if not self.validator.valid:
+                raise InvalidSearchArgumentsException(self.validator)
+        api_resp = self.call('get', self.path, params=kwargs)
         return api_resp
 
     def create(self, obj):
         if hasattr(self, 'validator_class'):
-            self.validator = self.validator_class(obj)
+            self.validator = self.validator_class(creating_obj=obj)
             if not self.validator.valid:
                 raise InvalidObjectException(self.validator)
         api_resp = self.call('post', self.path, data=obj, extra_headers={'Content-Type': 'application/json'})
@@ -68,7 +71,15 @@ class BaseAPI(object):
         resp = getattr(requests, method)(full_path, **kwargs)
 
         if resp.status_code in self.http_exception_map:
-            raise self.http_exception_map[resp.status_code]
+            bad_request_json = resp.json()
+            if resp.status_code == 400 and '_diagnostics' in bad_request_json and 'validation_failures' in bad_request_json['_diagnostics'] and len(bad_request_json['_diagnostics']['validation_failures']):
+                printable_errors = []
+                for validation_failure_list in bad_request_json['_diagnostics']['validation_failures']:
+                    for validation_failure in validation_failure_list:
+                        printable_errors.append('{0}.'.format(validation_failure))
+                raise self.http_exception_map[resp.status_code](' '.join(printable_errors))
+            else:
+                raise self.http_exception_map[resp.status_code]
 
         if method != 'delete':
             return resp.json()
