@@ -32,3 +32,4 @@ htmlcov
 *.mo
 
 venv
+go.py

@@ -29,7 +29,7 @@ class BaseAPI(object):
 
     def all(self, **kwargs):
         if hasattr(self, 'validator_class'):
-            self.validator = self.validator_class(searching_kwargs=kwargs)
+            self.validator = self.validator_class(search_kwargs=kwargs)
             if not self.validator.valid:
                 raise InvalidSearchArgumentsException(self.validator)
         api_resp = self.call('get', self.path, params=kwargs)
@@ -47,8 +47,8 @@ class BaseAPI(object):
     def delete(self, id):
         self.call('delete', '{0}/{1}'.format(self.path, id))
 
-    def find(self, id):
-        api_resp = self.call('get', '{0}/{1}'.format(self.path, id))
+    def find(self, id, **kwargs):
+        api_resp = self.call('get', '{0}/{1}'.format(self.path, id), params=kwargs)
         return api_resp
 
     def call(self, method, path, data=None, extra_headers=None, params=None):
