@@ -3,7 +3,7 @@ import json
 import requests
 
 from .exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
-from .serializers import RouteSerializer
+from .inflators import RouteInflator
 from .validators import RouteValidator
 
 
@@ -42,9 +42,9 @@ class BaseAPI(object):
             if not self.validator.valid:
                 raise InvalidObjectException(self.validator)
 
-        if hasattr(self, 'serializer_class'):
-            self.serializer = self.serializer_class(obj)
-            data = self.serializer.serialized
+        if hasattr(self, 'inflator_class'):
+            self.inflator = self.inflator_class(obj)
+            data = self.inflator.inflated
         else:
             data = obj
 
@@ -109,4 +109,4 @@ class BaseAPI(object):
 class Route(BaseAPI):
     path = '/route'
     validator_class = RouteValidator
-    serializer_class = RouteSerializer
+    inflator_class = RouteInflator
