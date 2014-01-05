@@ -5,6 +5,7 @@ import requests
 from .exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
 from .inflators import RouteInflator
 from .validators import RouteValidator
+from .serializers import RouteSerializer
 
 
 class APIConfig(object):
@@ -54,6 +55,11 @@ class BaseAPI(object):
             params = {'field_set': 'detailed'}
 
         api_resp = self.call('post', '{0}/'.format(self.path), data=data, extra_headers={'Content-Type': 'application/json'}, params=params)
+
+        if hasattr(self, 'serializer_class'):
+            serializer = self.serializer_class(api_resp)
+            return serializer.serialized
+
         return api_resp
 
 
@@ -110,3 +116,4 @@ class Route(BaseAPI):
     path = '/route'
     validator_class = RouteValidator
     inflator_class = RouteInflator
+    serializer_class = RouteSerializer
