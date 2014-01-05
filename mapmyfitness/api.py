@@ -3,6 +3,7 @@ import json
 import requests
 
 from .exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
+from .serializers import RouteSerializer
 from .validators import RouteValidator
 
 
@@ -37,10 +38,22 @@ class BaseAPI(object):
 
     def create(self, obj):
         if hasattr(self, 'validator_class'):
-            self.validator = self.validator_class(creating_obj=obj)
+            self.validator = self.validator_class(create_obj=obj)
             if not self.validator.valid:
                 raise InvalidObjectException(self.validator)
-        api_resp = self.call('post', self.path, data=obj, extra_headers={'Content-Type': 'application/json'})
+
+        if hasattr(self, 'serializer_class'):
+            self.serializer = self.serializer_class(obj)
+            data = self.serializer.serialized
+        else:
+            data = obj
+
+        params = None
+        if self.__class__.__name__ == 'Route':
+            # Routes are special, and need to be created with additional params
+            params = {'field_set': 'detailed'}
+
+        api_resp = self.call('post', '{0}/'.format(self.path), data=data, extra_headers={'Content-Type': 'application/json'}, params=params)
         return api_resp
 
 
@@ -96,3 +109,4 @@ class BaseAPI(object):
 class Route(BaseAPI):
     path = '/route'
     validator_class = RouteValidator
+    serializer_class = RouteSerializer
