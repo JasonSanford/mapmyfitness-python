@@ -1,7 +1,11 @@
+from mapmyfitness.constants import PUBLIC, PRIVATE, FRIENDS
+
 from .exceptions import ValidatorException
 
 
 class BaseValidator(object):
+    privacy_options = (PUBLIC, PRIVATE, FRIENDS)
+
     def type_or_types_to_str(self, type_or_types):
         def repr_to_str(repr):
             return repr.split(" '")[1].split("'>")[0]
@@ -52,6 +56,8 @@ class BaseValidator(object):
 class RouteValidator(BaseValidator):
     required_members = {
         'name': str,
+        'city': str,
+        'country': str,
         'distance': (int, float),
     }
 
@@ -61,6 +67,9 @@ class RouteValidator(BaseValidator):
         for required_member, type_or_types in self.required_members.items():
             if required_member not in obj or (required_member in obj and not isinstance(obj[required_member], type_or_types)):
                     self.add_error('Route {0} must exist and be of type {1}.'.format(required_member, self.type_or_types_to_str(type_or_types)))
+
+        if 'privacy' not in obj or ('privacy' in obj and obj['privacy'] not in self.privacy_options):
+            self.add_error('Route privacy must exist and be one of constants.PUBLIC, constants.PRIVATE or constants.FRIENDS.')
 
     def validate_find(self):
         pass

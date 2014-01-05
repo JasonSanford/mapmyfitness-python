@@ -1,4 +1,4 @@
-from mapmyfitness import MapMyFitness
+from mapmyfitness.constants import PRIVATE
 
 
 route = {
@@ -7,7 +7,7 @@ route = {
     'city': 'Littleton',
     'country': 'US',
     'distance': 25749.5,
-    'privacy': MapMyFitness.PRIVATE,
+    'privacy': PRIVATE,
     'state': 'CO',
     'points': [
         {'lat': 39.5735, 'lng': -105.0164},
