@@ -19,4 +19,11 @@ class RouteSerializer(BaseSerializer):
             ]
         }
 
+        serialized.setdefault('_links', {})
+
+        serialized['_links']['privacy'] = [{
+                'href': '/v7.0/privacy_option/{0}/'.format(serialized['privacy']),
+                'id': '{0}'.format(serialized['privacy'])
+            }]
+
         self.serialized = serialized

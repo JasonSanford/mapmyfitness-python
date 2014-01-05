@@ -2,6 +2,17 @@ from .exceptions import ValidatorException
 
 
 class BaseValidator(object):
+    def type_or_types_to_str(self, type_or_types):
+        def repr_to_str(repr):
+            return repr.split(" '")[1].split("'>")[0]
+        if isinstance(type_or_types, (list, tuple)):
+            types = []
+            for repr in type_or_types:
+                types.append(repr_to_str(str(repr)))
+            return ' or '.join(types)
+        else:
+            return repr_to_str(str(type_or_types))
+
     def __init__(self, create_obj=None, search_kwargs=None):
         if create_obj is None and search_kwargs is None:
             raise ValidatorException('Either create_obj or search_kwargs must be passed when instantiating a validator.')
@@ -39,8 +50,17 @@ class BaseValidator(object):
 
 
 class RouteValidator(BaseValidator):
+    required_members = {
+        'name': str,
+        'distance': (int, float),
+    }
+
     def validate_create(self):
-        pass
+        obj = self.create_obj
+
+        for required_member, type_or_types in self.required_members.items():
+            if required_member not in obj or (required_member in obj and not isinstance(obj[required_member], type_or_types)):
+                    self.add_error('Route {0} must exist and be of type {1}.'.format(required_member, self.type_or_types_to_str(type_or_types)))
 
     def validate_find(self):
         pass
