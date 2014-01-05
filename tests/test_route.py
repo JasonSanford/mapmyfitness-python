@@ -55,3 +55,6 @@ class RouteTest(MapMyFitnessTestCase):
         self.assertIsInstance(route, RouteObject)
         self.assertEqual(route.name, valid_route['name'])
         self.assertEqual(route.description, valid_route['description'])
+        self.assertEqual(route.distance, valid_route['distance'])
+        self.assertTrue(isinstance(route.points(), (list, tuple)) and len(route.points()) == 3)
+        self.assertTrue(isinstance(route.points(geojson=True), dict) and len(route.points(geojson=True)['coordinates']) == 3)

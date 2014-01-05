@@ -11,3 +11,15 @@ class RouteObject(BaseObject):
     @property
     def description(self):
         return self.original_dict['description']
+
+    @property
+    def distance(self):
+        return self.original_dict['distance']
+
+    def points(self, geojson=False):
+        _points = self.original_dict['points']
+
+        if geojson:
+            return {'type': 'LineString', 'coordinates': [(p['lng'], p['lat']) for p in _points]}
+
+        return _points
