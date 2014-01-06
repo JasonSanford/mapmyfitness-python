@@ -15,6 +15,7 @@ This is a work in progress:
 
 * [Routes](#routes)
 * Workouts*
+* Users*
 
 \* not currently implemented
 
