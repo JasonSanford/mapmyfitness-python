@@ -62,8 +62,10 @@ class RouteTest(MapMyFitnessTestCase):
         serializer = RouteSerializer(json)
         route = serializer.serialized
 
-        self.assertEqual(route.description, valid_route['description'])
-        self.assertEqual(route.distance, valid_route['distance'])
+        self.assertEqual(route.id, 341663347)
+        self.assertEqual(route.name, json['name'])
+        self.assertEqual(route.description, json['description'])
+        self.assertEqual(route.distance, json['distance'])
         self.assertTrue(isinstance(route.points(), (list, tuple)) and len(route.points()) == 3)
         self.assertTrue(isinstance(route.points(geojson=True), dict) and len(route.points(geojson=True)['coordinates']) == 3)
         self.assertEqual(route.ascent, 600)
