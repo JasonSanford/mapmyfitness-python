@@ -35,7 +35,11 @@ class BaseAPI(object):
             if not self.validator.valid:
                 raise InvalidSearchArgumentsException(self.validator)
         api_resp = self.call('get', self.path, params=kwargs)
-        return api_resp
+        objs = []
+        for obj in api_resp['_embedded'][self.embedded_name]:
+            serializer = self.serializer_class(obj)
+            objs.append(serializer.serialized)
+        return objs
 
     def create(self, obj):
         if hasattr(self, 'validator_class'):
@@ -56,11 +60,8 @@ class BaseAPI(object):
 
         api_resp = self.call('post', '{0}/'.format(self.path), data=data, extra_headers={'Content-Type': 'application/json'}, params=params)
 
-        if hasattr(self, 'serializer_class'):
-            serializer = self.serializer_class(api_resp)
-            return serializer.serialized
-
-        return api_resp
+        serializer = self.serializer_class(api_resp)
+        return serializer.serialized
 
 
     def delete(self, id):
@@ -68,7 +69,8 @@ class BaseAPI(object):
 
     def find(self, id, **kwargs):
         api_resp = self.call('get', '{0}/{1}'.format(self.path, id), params=kwargs)
-        return api_resp
+        serializer = self.serializer_class(api_resp)
+        return serializer.serialized
 
     def call(self, method, path, data=None, extra_headers=None, params=None):
         full_path = self.api_config.api_root + path
@@ -109,7 +111,8 @@ class BaseAPI(object):
             if not self.validator.valid:
                 raise InvalidObjectException(self.validator)
         api_resp = self.call('put', '{0}/{1}'.format(self.path, id), data=obj, extra_headers={'Content-Type': 'application/json'})
-        return api_resp
+        serializer = self.serializer_class(api_resp)
+        return serializer.serialized
 
 
 class Route(BaseAPI):
@@ -117,3 +120,4 @@ class Route(BaseAPI):
     validator_class = RouteValidator
     inflator_class = RouteInflator
     serializer_class = RouteSerializer
+    embedded_name = 'routes'
