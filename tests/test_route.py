@@ -4,7 +4,7 @@ import json
 import httpretty
 
 from mapmyfitness.constants import PUBLIC
-from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException
+from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException, InternalServerErrorException
 from mapmyfitness.objects import RouteObject
 from mapmyfitness.serializers import RouteSerializer
 from mapmyfitness.utils import iso_format_to_datetime
@@ -145,6 +145,16 @@ class RouteTest(MapMyFitnessTestCase):
         httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
         route = self.mmf.route.find(342208467)
         self.assertEqual(route.id, 342208467)
+
+    @httpretty.activate
+    def test_500(self):
+        uri = self.uri_root + '/route/342208467'
+        content_returned = '{"error": "yep"}'
+        httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=500)
+        try:
+            self.mmf.route.find(342208467)
+        except Exception as exc:
+            self.assertIsInstance(exc, InternalServerErrorException)
 
     @httpretty.activate
     def test_update(self):
