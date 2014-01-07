@@ -78,6 +78,37 @@ class RouteValidator(BaseValidator):
                     self.add_error('Each point in Route points must have a "{0}" key and be of type int or float.'.format(required))
 
     def validate_search(self):
+        def _bad_close_to_location():
+            self.add_error('Route close_to_location must be a list or 2-tuple of latitude,longitude.')
+        def _bad_users():
+            self.add_error('Route users must be a list or tuple of ints.')
+
         if 'user' not in self.search_kwargs and 'users' not in self.search_kwargs and 'close_to_location' not in self.search_kwargs:
             self.add_error('Either a user, users or close_to_location argument must be passed to search for routes.')
             return
+        if 'user' in self.search_kwargs:
+            try:
+                int(self.search_kwargs['user'])
+            except ValueError:
+                self.add_error('Route user must be of type int.')
+        elif 'users' in self.search_kwargs:
+            if not isinstance(self.search_kwargs['users'], (list, tuple)):
+                _bad_users()
+                return
+            users = self.search_kwargs['users']
+            for user in users:
+                try:
+                    int(user)
+                except ValueError:
+                    _bad_users()
+        else:  # close_to_location
+            lat_lng = self.search_kwargs['close_to_location']
+            if len(lat_lng) != 2:
+                _bad_close_to_location()
+            else:
+                for coord in lat_lng:
+                    try:
+                        float(coord)
+                    except ValueError:
+                        _bad_close_to_location()
+                        break

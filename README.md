@@ -1,8 +1,3 @@
-mapmyfitness-python
-===================
-
-
-
 # mapmyfitness-python
 
 [![Build Status](https://api.travis-ci.org/JasonSanford/mapmyfitness-python.png)](https://travis-ci.org/JasonSanford/mapmyfitness-python)&nbsp;[![Coverage Status](https://coveralls.io/repos/JasonSanford/mapmyfitness-python/badge.png?branch=master)](https://coveralls.io/r/JasonSanford/mapmyfitness-python?branch=master)
@@ -31,7 +26,8 @@ or from local sources:
 
 ## Dependencies
 
-Just one - [Requests](http://docs.python-requests.org/en/latest/) takes care of our HTTP chatting, and is automatically installed when using the steps above.
+* Python >= 2.7, <= 3.3
+* [Requests](http://docs.python-requests.org/en/latest/) takes care of our HTTP chatting, and is automatically installed when using the steps above.
 
 ## Usage
 

@@ -4,16 +4,23 @@ import json
 import httpretty
 
 from mapmyfitness.constants import PUBLIC
-from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException
+from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException
 from mapmyfitness.objects import RouteObject
 from mapmyfitness.serializers import RouteSerializer
 from mapmyfitness.utils import iso_format_to_datetime
+from mapmyfitness.validators import RouteValidator
 
 from tests import MapMyFitnessTestCase
 from tests.valid_objects import route as valid_route
 
 
 class RouteTest(MapMyFitnessTestCase):
+    def test_validator_bad_kwargs(self):
+        try:
+            RouteValidator()
+        except Exception as exc:
+            self.assertIsInstance(exc, ValidatorException)
+
     def test_no_filter(self):
         try:
             self.mmf.route.all()
@@ -65,6 +72,51 @@ class RouteTest(MapMyFitnessTestCase):
         except Exception as exc:
             self.assertIsInstance(exc, InvalidObjectException)
             self.assertEqual(str(exc), 'Each point in Route points must have a "lng" key and be of type int or float.')
+
+    def test_all_bad_user(self):
+        try:
+            self.mmf.route.all(user='lobster')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Route user must be of type int.')
+
+    def test_all_bad_users_not_list(self):
+        try:
+            self.mmf.route.all(users='lobsters')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Route users must be a list or tuple of ints.')
+
+    def test_all_bad_users_not_ints(self):
+        try:
+            self.mmf.route.all(users=(9118466, 'lobster'))
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Route users must be a list or tuple of ints.')
+
+    """
+    def test_all_user_success(self):
+        routes = self.mm.route.all(user=9118466)
+    """
+
+    def test_all_close_to_location_not_list(self):
+        try:
+            self.mmf.route.all(close_to_location='lobsters')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Route close_to_location must be a list or 2-tuple of latitude,longitude.')
+
+    def test_all_close_to_location_not_floatable(self):
+        try:
+            self.mmf.route.all(close_to_location=(40.732, 'lobster'))
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Route close_to_location must be a list or 2-tuple of latitude,longitude.')
+
+    """
+    def test_all_close_to_location_success(self):
+        self.mmf.route.all(close_to_location=(40, -105))
+    """
 
     @httpretty.activate
     def test_create_success(self):

@@ -34,6 +34,9 @@ class BaseAPI(object):
             self.validator = self.validator_class(search_kwargs=kwargs)
             if not self.validator.valid:
                 raise InvalidSearchArgumentsException(self.validator)
+        if self.__class__.__name__ == 'Route':
+            # Routes are special, and need to be requested with additional params
+            kwargs.update({'field_set': 'detailed'})
         api_resp = self.call('get', self.path, params=kwargs)
         objs = []
         for obj in api_resp['_embedded'][self.embedded_name]:
