@@ -42,9 +42,6 @@ class BaseValidator(object):
     def validate_create(self):
         """This should be overridden by subclasses of BaseValidator"""
 
-    def validate_find(self):
-        pass
-
     def validate_search(self):
         """This should be overridden by subclasses of BaseValidator"""
 
@@ -59,6 +56,7 @@ class RouteValidator(BaseValidator):
         'city': str,
         'country': str,
         'distance': (int, float),
+        'points': (list, tuple),
     }
 
     def validate_create(self):
@@ -71,8 +69,13 @@ class RouteValidator(BaseValidator):
         if 'privacy' not in obj or ('privacy' in obj and obj['privacy'] not in self.privacy_options):
             self.add_error('Route privacy must exist and be one of constants.PUBLIC, constants.PRIVATE or constants.FRIENDS.')
 
-    def validate_find(self):
-        pass
+        for point in obj['points']:
+            if not isinstance(point, dict):
+                self.add_error('Each point in Route points must be of type dict.')
+                break
+            for required in ('lat', 'lng'):
+                if required not in point or (required in point and not isinstance(point[required], (int, float))):
+                    self.add_error('Each point in Route points must have a "{0}" key and be of type int or float.'.format(required))
 
     def validate_search(self):
         if 'user' not in self.search_kwargs and 'users' not in self.search_kwargs and 'close_to_location' not in self.search_kwargs:

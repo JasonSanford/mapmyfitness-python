@@ -47,11 +47,8 @@ class BaseAPI(object):
             if not self.validator.valid:
                 raise InvalidObjectException(self.validator)
 
-        if hasattr(self, 'inflator_class'):
-            self.inflator = self.inflator_class(obj)
-            data = self.inflator.inflated
-        else:
-            data = obj
+        inflator = self.inflator_class(obj)
+        data = inflator.inflated
 
         params = None
         if self.__class__.__name__ == 'Route':
@@ -67,8 +64,12 @@ class BaseAPI(object):
     def delete(self, id):
         self.call('delete', '{0}/{1}'.format(self.path, id))
 
-    def find(self, id, **kwargs):
-        api_resp = self.call('get', '{0}/{1}'.format(self.path, id), params=kwargs)
+    def find(self, id):
+        params = None
+        if self.__class__.__name__ == 'Route':
+            # Routes are special, and need to be requested with additional params
+            params = {'field_set': 'detailed'}
+        api_resp = self.call('get', '{0}/{1}'.format(self.path, id), params=params)
         serializer = self.serializer_class(api_resp)
         return serializer.serialized
 
@@ -110,7 +111,11 @@ class BaseAPI(object):
             self.validator = self.validator_class(obj)
             if not self.validator.valid:
                 raise InvalidObjectException(self.validator)
-        api_resp = self.call('put', '{0}/{1}'.format(self.path, id), data=obj, extra_headers={'Content-Type': 'application/json'})
+
+        inflator = self.inflator_class(obj)
+        data = inflator.inflated
+
+        api_resp = self.call('put', '{0}/{1}/'.format(self.path, id), data=data, extra_headers={'Content-Type': 'application/json'})
         serializer = self.serializer_class(api_resp)
         return serializer.serialized
 
