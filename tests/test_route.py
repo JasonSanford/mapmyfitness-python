@@ -94,10 +94,14 @@ class RouteTest(MapMyFitnessTestCase):
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route users must be a list or tuple of ints.')
 
-    """
+    @httpretty.activate
     def test_all_user_success(self):
-        routes = self.mm.route.all(user=9118466)
-    """
+        uri = self.uri_root + '/route/?field_set=detailed&user=9118466'
+        content_returned = '{"_embedded": {"routes": [{"total_descent": -9.8980420904, "city": "Boston", "data_source": "MapMyRide", "description": "Easy and Quick daily run from Downtown Crossing", "updated_datetime": "2006-09-18T18:12:19+00:00", "created_datetime": "2006-09-18T18:12:19+00:00", "country": "us", "start_point_type": "", "starting_location": {"type": "Point", "coordinates": [-71.0617160797, 42.3561337597]}, "distance": 7998.43968, "total_ascent": 0.0, "climbs": [], "state": "MA", "points": [{"lat": 42.3561337597, "lng": -71.0617160797, "dis": 0.0, "ele": 30.28}, {"lat": 42.3562606124, "lng": -71.0616731644, "dis": 14.53, "ele": 30.5}], "postal_code": "02108", "min_elevation": 4.43, "_links": {"activity_types": [{"href": "/v7.0/activity_type/16/", "id": "16"}], "privacy": [{"href": "/v7.0/privacy_option/3/", "id": "3"}], "self": [{"href": "/v7.0/route/128262/", "id": "128262"}], "alternate": [{"href": "/v7.0/route/128262/?format=kml&field_set=detailed", "id": "128262", "name": "kml"}], "user": [{"href": "/v7.0/user/36142/", "id": "36142"}], "thumbnail": [{"href": "//images.mapmycdn.com/routes/thumbnail/128262?size=100x100"}]}, "max_elevation": 31.81, "name": "Regular Run 1"}]}}'
+        httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
+        routes = self.mmf.route.all(user=9118466)
+        self.assertIsInstance(routes, list)
+        self.assertIsInstance(routes[0], RouteObject)
 
     def test_all_close_to_location_latlng_not_list(self):
         try:
@@ -150,6 +154,15 @@ class RouteTest(MapMyFitnessTestCase):
         httpretty.register_uri(httpretty.PUT, uri, body=content_returned, status=200)
         route = self.mmf.route.update(342208467, update_with)
         self.assertEqual(route.description, 'Now you have a description.')
+
+    def test_update_no_privacy(self):
+        update_with = {"privacy": PUBLIC, "total_descent": None, "city": "Denver", "data_source": "run:RE", "description": "Now you have a description.", "updated_datetime": "2014-01-06T22:26:50+00:00", "created_datetime": "2014-01-06T23:26:18+00:00", "country": "us", "start_point_type": "", "starting_location": {"type": "Point", "coordinates": [-104.99652, 39.7499]}, "points": [{"lat":39.5735,"lng":-105.0164},{"lat":39.6781,"lng":-104.9926},{"lat":39.75009,"lng":-104.99656}], "name": "Tuesday Lunch Run", "climbs": None, "state": "CO", "max_elevation": None, "postal_code": "80202", "min_elevation": None, "total_ascent": None, "_links": {"activity_types": [{"href": "/v7.0/activity_type/16/", "id": "16"}], "privacy": [{"href": "/v7.0/privacy_option/0/", "id": "0"}], "self": [{"href": "/v7.0/route/342208467/", "id": "342208467"}], "alternate": [{"href": "/v7.0/route/342208467/?format=kml&field_set=detailed", "id": "342208467", "name": "kml"}], "user": [{"href": "/v7.0/user/1/", "id": "1"}], "thumbnail": [{"href": "//images.mapmycdn.com/routes/thumbnail/342208467?size=100x100"}], "documentation": [{"href": "https://developer.mapmyapi.com/docs/Route"}]}, "distance": 5506.3582910718}
+        del update_with['privacy']
+        try:
+            self.mmf.route.update(342208467, update_with)
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidObjectException)
+            self.assertEqual(str(exc), 'Route privacy must exist and be one of constants.PUBLIC, constants.PRIVATE or constants.FRIENDS.')
 
     @httpretty.activate
     def test_delete(self):

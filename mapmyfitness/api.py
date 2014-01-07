@@ -37,7 +37,8 @@ class BaseAPI(object):
         if self.__class__.__name__ == 'Route':
             # Routes are special, and need to be requested with additional params
             kwargs.update({'field_set': 'detailed'})
-        api_resp = self.call('get', self.path, params=kwargs)
+        api_resp = self.call('get', self.path + '/', params=kwargs)
+
         objs = []
         for obj in api_resp['_embedded'][self.embedded_name]:
             serializer = self.serializer_class(obj)
