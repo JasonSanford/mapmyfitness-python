@@ -4,7 +4,7 @@ import json
 import httpretty
 
 from mapmyfitness.constants import PUBLIC
-from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException, InternalServerErrorException
+from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException, InternalServerErrorException, BadRequestException
 from mapmyfitness.objects import RouteObject
 from mapmyfitness.serializers import RouteSerializer
 from mapmyfitness.utils import iso_format_to_datetime
@@ -155,6 +155,18 @@ class RouteTest(MapMyFitnessTestCase):
             self.mmf.route.find(342208467)
         except Exception as exc:
             self.assertIsInstance(exc, InternalServerErrorException)
+
+    @httpretty.activate
+    def test_400(self):
+        uri = self.uri_root + '/route/?field_set=detailed'
+        content_returned = '{"_diagnostics": {"validation_failures": [{"points": ["This field is required."]}]}, "_links": {"self": [{"href": "/v7.0/route/?limit=20&offset=0"}], "documentation": [{"href": "https://developer.mapmyapi.com/docs/Route"}]}}'
+        httpretty.register_uri(httpretty.POST, uri, body=content_returned, status=400)
+        try:
+            self.mmf.route.create(valid_route)
+        except Exception as exc:
+            self.assertIsInstance(exc, BadRequestException)
+            self.assertEqual(str(exc), 'points This field is required.')
+
 
     @httpretty.activate
     def test_update(self):
