@@ -102,7 +102,7 @@ class BaseAPI(object):
                 printable_errors = []
                 validation_failures = bad_request_json['_diagnostics']['validation_failures']
                 for validation_dict in validation_failures:
-                    for validation_dict_key, validation_dict_list in validation_dict.iteritems():
+                    for validation_dict_key, validation_dict_list in validation_dict.items():
                         for validation_error in validation_dict_list:
                             printable_errors.append('{0} {1}'.format(validation_dict_key, validation_error))
                 raise self.http_exception_map[resp.status_code](' '.join(printable_errors))
