@@ -112,3 +112,9 @@ class RouteValidator(BaseValidator):
                     except ValueError:
                         _bad_close_to_location()
                         break
+                for min_or_max in ('minimum_distance', 'maximum_distance'):
+                    if min_or_max in self.search_kwargs:
+                        try:
+                            float(self.search_kwargs[min_or_max])
+                        except ValueError:
+                            self.add_error('Route {0} must be of type int or float.'.format(min_or_max))

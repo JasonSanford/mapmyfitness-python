@@ -99,19 +99,26 @@ class RouteTest(MapMyFitnessTestCase):
         routes = self.mm.route.all(user=9118466)
     """
 
-    def test_all_close_to_location_not_list(self):
+    def test_all_close_to_location_latlng_not_list(self):
         try:
             self.mmf.route.all(close_to_location='lobsters')
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route close_to_location must be a list or 2-tuple of latitude,longitude.')
 
-    def test_all_close_to_location_not_floatable(self):
+    def test_all_close_to_location_latlng_not_floatable(self):
         try:
             self.mmf.route.all(close_to_location=(40.732, 'lobster'))
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route close_to_location must be a list or 2-tuple of latitude,longitude.')
+
+    def test_all_close_to_location_bad_distance(self):
+        try:
+            self.mmf.route.all(close_to_location=(40.732, -105), minimum_distance='lobster')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Route minimum_distance must be of type int or float.')
 
     """
     def test_all_close_to_location_success(self):
