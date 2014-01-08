@@ -1,4 +1,5 @@
 from .api import APIConfig, Route
+from .exceptions import NotInitializedException
 
 
 class MapMyFitness(object):
@@ -18,3 +19,24 @@ class MapMyFitness(object):
     def __init__(self, api_key, access_token):
         api_config = APIConfig(api_key=api_key, access_token=access_token)
         self.route = Route(api_config=api_config)
+
+
+    @classmethod
+    def instance(cls):
+        """
+        Returns the singleton instance of MapMyFitness if initializaed.
+        If there is no initialized singleton instance, it raises a not initialized exception.
+
+        ::raises:: NotInitializedException
+        """
+        if cls._instance:
+            return cls._instance
+
+        raise NotInitializedException("MapMyFitness has not been initialized")
+
+    @classmethod
+    def _drop(cls):
+        """
+        Drops the instance of the singleton (for testing purposes)
+        """
+        cls._instance = None        
