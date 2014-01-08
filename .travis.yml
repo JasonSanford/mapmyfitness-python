@@ -7,6 +7,7 @@ python:
 install:
   - "python setup.py install"
   - "pip install -r test_requirements.txt"
+  - "pip install flake8==2.1.0"
 before_script:
   - "flake8 --ignore=E501 mapmyfitness"
 # command to run tests
