@@ -38,4 +38,4 @@ class MapMyFitness(object):
         """
         Drops the instance of the singleton (for testing purposes)
         """
-        cls._instance = None        
+        cls._instance = None

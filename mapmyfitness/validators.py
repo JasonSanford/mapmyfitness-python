@@ -25,7 +25,7 @@ class BaseValidator(object):
         else:  # search_kwargs is not None
             self.search_kwargs = search_kwargs
         self.errors = []
-        
+
         if hasattr(self, 'create_obj'):
             self.validate_create()
         else:  # hasattr(self, 'search_kwargs')
@@ -80,6 +80,7 @@ class RouteValidator(BaseValidator):
     def validate_search(self):
         def _bad_close_to_location():
             self.add_error('Route close_to_location must be a list or 2-tuple of latitude,longitude.')
+
         def _bad_users():
             self.add_error('Route users must be a list or tuple of ints.')
 
