@@ -6,6 +6,10 @@ class NotFoundException(Exception):
     """The resource could not be found."""
 
 
+class NotInitializedException(Exception):
+    """The resource has not been initialized"""
+
+
 class UnauthorizedException(Exception):
     """The API key supplied is not authorized to access this resource."""
 
