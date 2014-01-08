@@ -23,3 +23,7 @@ class MapMyFitnessSingleton(MapMyFitnessTestCase):
         else:
             assert False  # We should have raised the exception
 
+    def test_MapMyFitness_instance(self):
+        MapMyFitness('api-key', 'access_token')
+
+        assert MapMyFitness.instance()

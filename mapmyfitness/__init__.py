@@ -20,7 +20,6 @@ class MapMyFitness(object):
         api_config = APIConfig(api_key=api_key, access_token=access_token)
         self.route = Route(api_config=api_config)
 
-
     @classmethod
     def instance(cls):
         """
