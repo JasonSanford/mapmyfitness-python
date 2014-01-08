@@ -7,9 +7,11 @@ python:
 install:
   - "python setup.py install"
   - "pip install -r test_requirements.txt"
+before_script:
+  - "flake8 --ignore=E501 mapmyfitness"
 # command to run tests
 script:
-    "nosetests --with-coverage --cover-package mapmyfitness && flake8 --ignore=E501 mapmyfitness"
+    nosetests --with-coverage --cover-package mapmyfitness
 after_script:
   # Report coverage results to coveralls.io
   - pip install coveralls
