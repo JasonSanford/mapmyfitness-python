@@ -1,4 +1,4 @@
-from .objects import RouteObject
+from .objects import RouteObject, WorkoutObject
 
 
 class BaseSerializer(object):
@@ -9,3 +9,7 @@ class BaseSerializer(object):
 
 class RouteSerializer(BaseSerializer):
     object_class = RouteObject
+
+
+class WorkoutSerializer(BaseSerializer):
+    object_class = WorkoutObject

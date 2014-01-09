@@ -27,3 +27,9 @@ class RouteInflator(BaseInflator):
         }]
 
         self.inflated = inflated
+
+
+class WorkoutInflator(BaseInflator):
+    def inflate(self):
+        inflated = copy.deepcopy(self.initial_obj)
+        self.inflated = inflated
