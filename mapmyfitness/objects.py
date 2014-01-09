@@ -146,3 +146,12 @@ class WorkoutObject(BaseObject):
         links = self.original_dict['_links']
         if 'route' in links:
             return int(links['route'][0]['id'])
+
+    @property
+    def activity_type_id(self):
+        return int(self.original_dict['_links']['activity_type'][0]['id'])
+
+    @property
+    def privacy(self):
+        privacy_enum = int(self.original_dict['_links']['privacy'][0]['id'])
+        return privacy_enum_to_string(privacy_enum)
