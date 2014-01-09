@@ -22,8 +22,8 @@ class RouteInflator(BaseInflator):
         inflated.setdefault('_links', {})
 
         inflated['_links']['privacy'] = [{
-                'href': '/v7.0/privacy_option/{0}/'.format(inflated['privacy']),
-                'id': '{0}'.format(inflated['privacy'])
-            }]
+            'href': '/v7.0/privacy_option/{0}/'.format(inflated['privacy']),
+            'id': '{0}'.format(inflated['privacy'])
+        }]
 
         self.inflated = inflated

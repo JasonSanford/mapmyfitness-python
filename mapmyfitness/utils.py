@@ -2,6 +2,7 @@ import datetime
 
 from .timezones import utc
 
+
 def privacy_enum_to_string(privacy_enum):
     #
     # From constants:

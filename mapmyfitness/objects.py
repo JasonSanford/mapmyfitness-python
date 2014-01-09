@@ -1,5 +1,6 @@
 from .utils import privacy_enum_to_string, iso_format_to_datetime
 
+
 class BaseObject(object):
     def __init__(self, dict_):
         self.original_dict = dict_

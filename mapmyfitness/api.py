@@ -64,7 +64,6 @@ class BaseAPI(object):
         serializer = self.serializer_class(api_resp)
         return serializer.serialized
 
-
     def delete(self, id):
         self.call('delete', '{0}/{1}'.format(self.path, id))
 
@@ -85,7 +84,7 @@ class BaseAPI(object):
         }
         if extra_headers is not None:
             headers.update(extra_headers)
-        
+
         kwargs = {'headers': headers}
 
         if data is not None:
