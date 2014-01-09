@@ -30,10 +30,9 @@ class BaseAPI(object):
         self.api_config = api_config
 
     def all(self, **kwargs):
-        if hasattr(self, 'validator_class'):
-            self.validator = self.validator_class(search_kwargs=kwargs)
-            if not self.validator.valid:
-                raise InvalidSearchArgumentsException(self.validator)
+        self.validator = self.validator_class(search_kwargs=kwargs)
+        if not self.validator.valid:
+            raise InvalidSearchArgumentsException(self.validator)
         if self.__class__.__name__ == 'Route':
             # Routes are special, and need to be requested with additional params
             kwargs.update({'field_set': 'detailed'})
@@ -46,10 +45,9 @@ class BaseAPI(object):
         return objs
 
     def create(self, obj):
-        if hasattr(self, 'validator_class'):
-            self.validator = self.validator_class(create_obj=obj)
-            if not self.validator.valid:
-                raise InvalidObjectException(self.validator)
+        self.validator = self.validator_class(create_obj=obj)
+        if not self.validator.valid:
+            raise InvalidObjectException(self.validator)
 
         inflator = self.inflator_class(obj)
         data = inflator.inflated
@@ -112,10 +110,9 @@ class BaseAPI(object):
             return resp.json()
 
     def update(self, id, obj):
-        if hasattr(self, 'validator_class'):
-            self.validator = self.validator_class(obj)
-            if not self.validator.valid:
-                raise InvalidObjectException(self.validator)
+        self.validator = self.validator_class(obj)
+        if not self.validator.valid:
+            raise InvalidObjectException(self.validator)
 
         inflator = self.inflator_class(obj)
         data = inflator.inflated
