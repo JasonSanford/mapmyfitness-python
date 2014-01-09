@@ -29,7 +29,7 @@ class BaseAPI(object):
     def __init__(self, api_config):
         self.api_config = api_config
 
-    def all(self, **kwargs):
+    def search(self, **kwargs):
         self.validator = self.validator_class(search_kwargs=kwargs)
         if not self.validator.valid:
             raise InvalidSearchArgumentsException(self.validator)

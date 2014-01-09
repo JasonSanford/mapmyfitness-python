@@ -23,7 +23,7 @@ class RouteTest(MapMyFitnessTestCase):
 
     def test_no_filter(self):
         try:
-            self.mmf.route.all()
+            self.mmf.route.search()
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Either a user, users or close_to_location argument must be passed to search for routes.')
@@ -75,21 +75,21 @@ class RouteTest(MapMyFitnessTestCase):
 
     def test_all_bad_user(self):
         try:
-            self.mmf.route.all(user='lobster')
+            self.mmf.route.search(user='lobster')
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route user must be of type int.')
 
     def test_all_bad_users_not_list(self):
         try:
-            self.mmf.route.all(users='lobsters')
+            self.mmf.route.search(users='lobsters')
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route users must be a list or tuple of ints.')
 
     def test_all_bad_users_not_ints(self):
         try:
-            self.mmf.route.all(users=(9118466, 'lobster'))
+            self.mmf.route.search(users=(9118466, 'lobster'))
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route users must be a list or tuple of ints.')
@@ -99,34 +99,34 @@ class RouteTest(MapMyFitnessTestCase):
         uri = self.uri_root + '/route/?field_set=detailed&user=9118466'
         content_returned = '{"_embedded": {"routes": [{"total_descent": -9.8980420904, "city": "Boston", "data_source": "MapMyRide", "description": "Easy and Quick daily run from Downtown Crossing", "updated_datetime": "2006-09-18T18:12:19+00:00", "created_datetime": "2006-09-18T18:12:19+00:00", "country": "us", "start_point_type": "", "starting_location": {"type": "Point", "coordinates": [-71.0617160797, 42.3561337597]}, "distance": 7998.43968, "total_ascent": 0.0, "climbs": [], "state": "MA", "points": [{"lat": 42.3561337597, "lng": -71.0617160797, "dis": 0.0, "ele": 30.28}, {"lat": 42.3562606124, "lng": -71.0616731644, "dis": 14.53, "ele": 30.5}], "postal_code": "02108", "min_elevation": 4.43, "_links": {"activity_types": [{"href": "/v7.0/activity_type/16/", "id": "16"}], "privacy": [{"href": "/v7.0/privacy_option/3/", "id": "3"}], "self": [{"href": "/v7.0/route/128262/", "id": "128262"}], "alternate": [{"href": "/v7.0/route/128262/?format=kml&field_set=detailed", "id": "128262", "name": "kml"}], "user": [{"href": "/v7.0/user/36142/", "id": "36142"}], "thumbnail": [{"href": "//images.mapmycdn.com/routes/thumbnail/128262?size=100x100"}]}, "max_elevation": 31.81, "name": "Regular Run 1"}]}}'
         httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
-        routes = self.mmf.route.all(user=9118466)
+        routes = self.mmf.route.search(user=9118466)
         self.assertIsInstance(routes, list)
         self.assertIsInstance(routes[0], RouteObject)
 
     def test_all_close_to_location_latlng_not_list(self):
         try:
-            self.mmf.route.all(close_to_location='lobsters')
+            self.mmf.route.search(close_to_location='lobsters')
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route close_to_location must be a list or 2-tuple of latitude,longitude.')
 
     def test_all_close_to_location_latlng_not_floatable(self):
         try:
-            self.mmf.route.all(close_to_location=(40.732, 'lobster'))
+            self.mmf.route.search(close_to_location=(40.732, 'lobster'))
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route close_to_location must be a list or 2-tuple of latitude,longitude.')
 
     def test_all_close_to_location_bad_distance(self):
         try:
-            self.mmf.route.all(close_to_location=(40.732, -105), minimum_distance='lobster')
+            self.mmf.route.search(close_to_location=(40.732, -105), minimum_distance='lobster')
         except Exception as exc:
             self.assertIsInstance(exc, InvalidSearchArgumentsException)
             self.assertEqual(str(exc), 'Route minimum_distance must be of type int or float.')
 
     """
     def test_all_close_to_location_success(self):
-        self.mmf.route.all(close_to_location=(40, -105))
+        self.mmf.route.search(close_to_location=(40, -105))
     """
 
     @httpretty.activate
