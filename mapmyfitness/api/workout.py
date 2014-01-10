@@ -4,7 +4,6 @@ from mapmyfitness.validators import WorkoutValidator
 from mapmyfitness.serializers import WorkoutSerializer
 
 
-
 class Workout(BaseAPI):
     path = '/workout'
     validator_class = WorkoutValidator
