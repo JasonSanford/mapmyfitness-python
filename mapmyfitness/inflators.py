@@ -2,6 +2,7 @@ import copy
 
 from .utils import datetime_to_iso_format
 
+
 class BaseInflator(object):
     def __init__(self, obj):
         self.initial_obj = obj
