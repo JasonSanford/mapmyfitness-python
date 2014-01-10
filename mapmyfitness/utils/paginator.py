@@ -1,6 +1,6 @@
 class PaginatorMetaClass(type):
     """
-    The PaginatorMetaClass will allow nifty things like 
+    The PaginatorMetaClass will allow nifty things like
     len(paginator_object)
     """
     def __len__(self):
@@ -18,7 +18,6 @@ class Paginator(object):
         This is part of the implementation for len(Paginator_object)
         """
         return len(cls.data) if cls.data else 0
-
 
     offset = 0
     page_size = 25
@@ -40,7 +39,7 @@ class Paginator(object):
 
     @property
     def end_index(self):
-        return ( (self.offset + 1) * self.page_size)
+        return ((self.offset + 1) * self.page_size)
 
     def create(self, data, total=None, **kwargs):
         for key, value in kwargs:
