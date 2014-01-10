@@ -3,9 +3,9 @@ import json
 import requests
 
 from .exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
-from .inflators import RouteInflator
-from .validators import RouteValidator
-from .serializers import RouteSerializer
+from .inflators import RouteInflator, WorkoutInflator
+from .validators import RouteValidator, WorkoutValidator
+from .serializers import RouteSerializer, WorkoutSerializer
 
 
 class APIConfig(object):
@@ -128,3 +128,11 @@ class Route(BaseAPI):
     inflator_class = RouteInflator
     serializer_class = RouteSerializer
     embedded_name = 'routes'
+
+
+class Workout(BaseAPI):
+    path = '/workout'
+    validator_class = WorkoutValidator
+    inflator_class = WorkoutInflator
+    serializer_class = WorkoutSerializer
+    embedded_name = 'workouts'

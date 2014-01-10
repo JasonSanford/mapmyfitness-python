@@ -119,3 +119,11 @@ class RouteValidator(BaseValidator):
                             float(self.search_kwargs[min_or_max])
                         except ValueError:
                             self.add_error('Route {0} must be of type int or float.'.format(min_or_max))
+
+
+class WorkoutValidator(BaseValidator):
+    def validate_create(self):
+        pass
+
+    def validate_search(self):
+        pass
