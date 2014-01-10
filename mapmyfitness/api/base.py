@@ -2,20 +2,7 @@ import json
 
 import requests
 
-from .exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
-from .inflators import RouteInflator, WorkoutInflator
-from .validators import RouteValidator, WorkoutValidator
-from .serializers import RouteSerializer, WorkoutSerializer
-
-
-class APIConfig(object):
-    uri_root = 'https://oauth2-api.mapmyapi.com'
-
-    def __init__(self, api_key, access_token):
-
-        self.api_key = api_key
-        self.access_token = access_token
-        self.api_root = '{0}/v7.0'.format(self.uri_root)
+from mapmyfitness.exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
 
 
 class BaseAPI(object):
@@ -120,19 +107,3 @@ class BaseAPI(object):
         api_resp = self.call('put', '{0}/{1}/'.format(self.path, id), data=data, extra_headers={'Content-Type': 'application/json'})
         serializer = self.serializer_class(api_resp)
         return serializer.serialized
-
-
-class Route(BaseAPI):
-    path = '/route'
-    validator_class = RouteValidator
-    inflator_class = RouteInflator
-    serializer_class = RouteSerializer
-    embedded_name = 'routes'
-
-
-class Workout(BaseAPI):
-    path = '/workout'
-    validator_class = WorkoutValidator
-    inflator_class = WorkoutInflator
-    serializer_class = WorkoutSerializer
-    embedded_name = 'workouts'

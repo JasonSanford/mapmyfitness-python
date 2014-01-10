@@ -1,4 +1,6 @@
-from .api import APIConfig, Route, Workout
+from mapmyfitness.api.config import APIConfig
+from mapmyfitness.api.route import Route
+from mapmyfitness.api.workout import Workout
 from .exceptions import NotInitializedException
 
 
