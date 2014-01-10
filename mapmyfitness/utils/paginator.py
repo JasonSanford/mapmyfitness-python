@@ -5,7 +5,6 @@ class Paginator(object):
         """
         This is part of the implementation for len(Paginator_object)
         """
-        print self.data
         return len(self.data) if self.data else 0
 
     offset = 0
