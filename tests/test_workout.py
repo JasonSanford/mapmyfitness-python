@@ -1,7 +1,7 @@
 import httpretty
 
 from mapmyfitness.serializers import WorkoutSerializer
-from mapmyfitness.utils import iso_format_to_datetime
+from mapmyfitness.utils.datetime_utils import iso_format_to_datetime
 
 from tests import MapMyFitnessTestCase
 

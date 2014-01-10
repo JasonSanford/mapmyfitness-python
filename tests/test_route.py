@@ -7,7 +7,7 @@ from mapmyfitness.constants import PUBLIC
 from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException, InternalServerErrorException, BadRequestException
 from mapmyfitness.objects.route import RouteObject
 from mapmyfitness.serializers import RouteSerializer
-from mapmyfitness.utils import iso_format_to_datetime
+from mapmyfitness.utils.datetime_utils import iso_format_to_datetime
 from mapmyfitness.validators import RouteValidator
 
 from tests import MapMyFitnessTestCase
