@@ -33,6 +33,10 @@ or from local sources:
 
     # TODO: this
 
+## Validation
+
+PEP8 validation (--ignore==E501, line length) is strictly enforced
+
 ## Testing
 
 You'll need some additional things to run tests, so:
