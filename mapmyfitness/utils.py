@@ -24,3 +24,8 @@ def iso_format_to_datetime(iso_format):
     year, month, day = map(int, date.split('-'))
     hour, minute, second = map(int, time.split(':'))
     return datetime.datetime(year, month, day, hour, minute, second, tzinfo=utc)
+
+
+def datetime_to_iso_format(dt):
+    utc_datetime = dt.replace(tzinfo=utc)
+    return utc_datetime.isoformat()
