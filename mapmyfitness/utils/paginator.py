@@ -16,9 +16,7 @@ class Paginator(object):
         of offset and page_size. These have defaults, and will do the
         computations for starting and ending item indexes.
         """
-        print "offset: %s" % offset
         if offset:
-            print "setting offset."
             self.offset = offset
         if page_size:
             self.page_size = page_size
