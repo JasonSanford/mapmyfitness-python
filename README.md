@@ -8,6 +8,8 @@ A Python wrapper for the [MapMyFitness API](https://developer.mapmyapi.com/)
 
 This is a work in progress:
 
+We're making progress over at [HuBoard](https://huboard.com/JasonSanford/mapmyfitness-python)
+
 * [Routes](#routes)
 * Workouts*
 * Users*
