@@ -139,4 +139,7 @@ class WorkoutValidator(BaseValidator):
                 self.add_error('Workout {0} must be of type int or float.'.format(aggregate_value))
 
     def validate_search(self):
-        pass
+        search_kwargs = self.search_kwargs
+
+        if 'user' not in search_kwargs or ('user' in search_kwargs and not isinstance(search_kwargs['user'], int)):
+            self.add_error('Workout user must exist and be of type int.')

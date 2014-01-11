@@ -2,7 +2,7 @@ import copy
 
 import httpretty
 
-from mapmyfitness.exceptions import BadRequestException, InvalidObjectException
+from mapmyfitness.exceptions import BadRequestException, InvalidObjectException, InvalidSearchArgumentsException
 from mapmyfitness.objects.workout import WorkoutObject
 from mapmyfitness.serializers import WorkoutSerializer
 from mapmyfitness.utils import iso_format_to_datetime
@@ -78,6 +78,13 @@ class WorkoutTest(MapMyFitnessTestCase):
         except Exception as exc:
             self.assertIsInstance(exc, InvalidObjectException)
             self.assertEqual(str(exc), 'Workout active_time_total must be of type int or float.')
+
+    def test_search_no_user(self):
+        try:
+            self.mmf.workout.search()
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Workout user must exist and be of type int.')
 
     def test_serializer(self):
         json = {'start_datetime': '2011-06-22T15:27:00+00:00', 'name': 'Bike to Work Day - return', 'updated_datetime': '2012-02-09T19:15:38+00:00', 'created_datetime': '2012-02-09T19:14:43+00:00', 'aggregates': {'active_time_total': 4119, 'distance_total': 20985.84576, 'speed_max': 25.179483296000001, 'steps_total': 0, 'speed_avg': 5.0948701759999997, 'elapsed_time_total': 4080, 'metabolic_energy_total': 2422536}, 'reference_key': '2011-06-2215:27:08+00:00', 'start_locale_timezone': "'murica/Denver", 'source': 'UnknownFile(http://ridewithgps.com/:gpx)', '_links': {'user': [{'href': '/v7.0/user/9118466/', 'id': '9118466'}], 'self': [{'href': '/v7.0/workout/93093928/', 'id': '93093928'}], 'privacy': [{'href': '/v7.0/privacy_option/1/', 'id': '1'}], 'route': [{'href': '/v7.0/route/68443498/', 'id': '68443498'}], 'activity_type': [{'href': '/v7.0/activity_type/11/', 'id': '11'}]}, 'has_time_series': True}
