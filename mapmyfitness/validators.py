@@ -1,5 +1,6 @@
-from mapmyfitness.constants import PUBLIC, PRIVATE, FRIENDS
+import datetime
 
+from .constants import PUBLIC, PRIVATE, FRIENDS
 from .exceptions import ValidatorException
 
 
@@ -123,7 +124,20 @@ class RouteValidator(BaseValidator):
 
 class WorkoutValidator(BaseValidator):
     def validate_create(self):
-        pass
+        # TODO: Ugh, too late to deal with cirular imports
+        from .api.workout import aggregate_values
+        obj = self.create_obj
+
+        if 'activity_type' not in obj or ('activity_type' in obj and not isinstance(obj['activity_type'], int)):
+            self.add_error('Workout activity_type must exist and be of type int.')
+
+        if 'start_datetime' not in obj or ('start_datetime' in obj and not isinstance(obj['start_datetime'], datetime.datetime)):
+            self.add_error('Workout start_datetime must exist and be of type datetime.datetime.')
+
+        for aggregate_value in aggregate_values:
+            if aggregate_value in obj and not isinstance(obj[aggregate_value], (int, float)):
+                self.add_error('Workout {0} must be of type int or float.'.format(aggregate_value))
+
 
     def validate_search(self):
         pass

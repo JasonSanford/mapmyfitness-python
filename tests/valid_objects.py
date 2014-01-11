@@ -1,4 +1,6 @@
-from mapmyfitness.constants import PRIVATE
+import datetime
+
+from mapmyfitness.constants import PRIVATE, BIKE_RIDE
 
 
 route = {
@@ -14,4 +16,13 @@ route = {
         {'lat': 39.6781, 'lng': -104.9926},
         {'lat': 39.75009, 'lng': -104.99656}
     ]
+}
+
+workout = workout = {
+    'user': 14122640,
+    'name': 'Test workout via API',
+    'start_datetime': datetime.datetime(2014, 1, 9, 10, 8, 7),
+    'activity_type': BIKE_RIDE,
+    'active_time_total': 600,
+    'elapsed_time_total': 650,
 }
