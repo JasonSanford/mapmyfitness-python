@@ -138,6 +138,5 @@ class WorkoutValidator(BaseValidator):
             if aggregate_value in obj and not isinstance(obj[aggregate_value], (int, float)):
                 self.add_error('Workout {0} must be of type int or float.'.format(aggregate_value))
 
-
     def validate_search(self):
         pass
