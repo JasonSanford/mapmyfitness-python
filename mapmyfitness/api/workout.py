@@ -10,6 +10,10 @@ aggregate_values = ['active_time_total', 'distance_total', 'speed_max',
                     'metabolic_energy_total'
                     ]
 
+time_series_values = ['heartrate', 'speed', 'cadence', 'power', 'torque',
+                      'distance', 'steps', 'position', 'timer_stop'
+                      ]
+
 
 class Workout(BaseAPI):
     path = '/workout'

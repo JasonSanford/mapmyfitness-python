@@ -79,6 +79,33 @@ class WorkoutTest(MapMyFitnessTestCase):
             self.assertIsInstance(exc, InvalidObjectException)
             self.assertEqual(str(exc), 'Workout active_time_total must be of type int or float.')
 
+    def test_bad_position(self):
+        a_workout = copy.deepcopy(valid_workout)
+        a_workout['time_series']['position'][0].append('lobster')
+        try:
+            self.mmf.workout.create(a_workout)
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidObjectException)
+            self.assertEqual(str(exc), 'Workout time_series position must be a 2-list with the first item being of type int or float and the second item being a dict.')
+
+    def test_missing_lat(self):
+        a_workout = copy.deepcopy(valid_workout)
+        del a_workout['time_series']['position'][0][1]['lat']
+        try:
+            self.mmf.workout.create(a_workout)
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidObjectException)
+            self.assertEqual(str(exc), 'Workout time_series position dict must have a lat key and be of type int or float.')
+
+    def test_bad_time_series(self):
+        a_workout = copy.deepcopy(valid_workout)
+        a_workout['time_series']['heartrate'][0].append('lobster')
+        try:
+            self.mmf.workout.create(a_workout)
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidObjectException)
+            self.assertEqual(str(exc), 'Workout time_series heartrate must be a 2-list with each item being of type int or float.')
+
     def test_search_no_user(self):
         try:
             self.mmf.workout.search()
