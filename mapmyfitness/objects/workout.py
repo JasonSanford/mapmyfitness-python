@@ -31,6 +31,15 @@ class WorkoutObject(BaseObject):
     def source(self):
         return self.original_dict['source']
 
+    @property
+    def has_time_series(self):
+        return self.original_dict['has_time_series']
+
+    @property
+    def time_series(self):
+        if self.has_time_series and 'time_series' in self.original_dict:
+            return self.original_dict['time_series']
+
     #
     # Aggregates
     #

@@ -166,3 +166,11 @@ class WorkoutValidator(BaseValidator):
 
         if 'user' not in search_kwargs or ('user' in search_kwargs and not isinstance(search_kwargs['user'], int)):
             self.add_error('Workout user must exist and be of type int.')
+
+        datetime_args = ['updated_before', 'updated_after', 'created_before', 'created_after', 'started_before', 'started_after']
+        for datetime_arg in datetime_args:
+            if datetime_arg in search_kwargs and not isinstance(search_kwargs[datetime_arg], datetime.datetime):
+                self.add_error('Workout {0} must be of type datetime.datetime.'.format(datetime_arg))
+
+        if 'activity_type' in search_kwargs and not isinstance(search_kwargs['activity_type'], int):
+            self.add_error('Workout activity_type must be of type int.')
