@@ -37,8 +37,17 @@ class WorkoutObject(BaseObject):
 
     @property
     def time_series(self):
-        if self.has_time_series and 'time_series' in self.original_dict:
-            return self.original_dict['time_series']
+        if self.has_time_series:
+            if 'time_series' in self.original_dict:
+                return self.original_dict['time_series']
+            elif hasattr(self, '_time_series'):
+                return self._time_series
+            else:
+                from mapmyfitness import MapMyFitness
+                instance = MapMyFitness.instance()
+                workout = instance.workout.find(self.id)
+                self._time_series = workout.time_series
+                return self._time_series
 
     #
     # Aggregates

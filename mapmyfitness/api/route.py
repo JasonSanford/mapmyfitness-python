@@ -1,8 +1,7 @@
 from .base import BaseAPI
-
-from mapmyfitness.inflators import RouteInflator
-from mapmyfitness.validators import RouteValidator
-from mapmyfitness.serializers import RouteSerializer
+from ..inflators import RouteInflator
+from ..validators import RouteValidator
+from ..serializers import RouteSerializer
 
 
 class Route(BaseAPI):

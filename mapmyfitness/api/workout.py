@@ -1,7 +1,7 @@
 from .base import BaseAPI
-from mapmyfitness.inflators import WorkoutInflator
-from mapmyfitness.validators import WorkoutValidator
-from mapmyfitness.serializers import WorkoutSerializer
+from ..inflators import WorkoutInflator
+from ..validators import WorkoutValidator
+from ..serializers import WorkoutSerializer
 
 aggregate_values = ['active_time_total', 'distance_total', 'speed_max',
                     'speed_min', 'heartrate_min', 'power_min', 'speed_avg',

@@ -3,8 +3,8 @@ import json
 
 import requests
 
-from mapmyfitness.exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
-from mapmyfitness.utils import datetime_to_iso_format
+from ..exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
+from ..utils import datetime_to_iso_format
 
 
 class BaseAPI(object):
