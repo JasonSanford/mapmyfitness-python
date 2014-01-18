@@ -18,7 +18,6 @@ class BaseAPI(object):
     def __init__(self, api_config):
         self.api_config = api_config
 
-
     def call(self, method, path, data=None, extra_headers=None, params=None):
         full_path = self.api_config.api_root + path
         headers = {
