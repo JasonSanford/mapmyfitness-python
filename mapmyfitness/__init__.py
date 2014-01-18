@@ -1,6 +1,6 @@
-from mapmyfitness.api.config import APIConfig
-from mapmyfitness.api.route import Route
-from mapmyfitness.api.workout import Workout
+from .api.config import APIConfig
+from .api.route import Route
+from .api.workout import Workout
 from .exceptions import NotInitializedException
 
 

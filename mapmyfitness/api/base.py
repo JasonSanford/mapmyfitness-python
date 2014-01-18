@@ -1,8 +1,10 @@
+import datetime
 import json
 
 import requests
 
-from mapmyfitness.exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
+from ..exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, InvalidObjectException, InvalidSearchArgumentsException
+from ..utils import datetime_to_iso_format
 
 
 class BaseAPI(object):
@@ -20,9 +22,11 @@ class BaseAPI(object):
         self.validator = self.validator_class(search_kwargs=kwargs)
         if not self.validator.valid:
             raise InvalidSearchArgumentsException(self.validator)
+
         if self.__class__.__name__ == 'Route':
             # Routes are special, and need to be requested with additional params
             kwargs.update({'field_set': 'detailed'})
+
         api_resp = self.call('get', self.path + '/', params=kwargs)
 
         objs = []
@@ -52,11 +56,17 @@ class BaseAPI(object):
     def delete(self, id):
         self.call('delete', '{0}/{1}'.format(self.path, id))
 
-    def find(self, id):
+    def find(self, id, **kwargs):
         params = None
+
         if self.__class__.__name__ == 'Route':
             # Routes are special, and need to be requested with additional params
             params = {'field_set': 'detailed'}
+
+        if self.__class__.__name__ == 'Workout':
+            # Workouts are special, and need to be requested with additional params
+            params = {'field_set': 'time_series'}
+
         api_resp = self.call('get', '{0}/{1}'.format(self.path, id), params=params)
         serializer = self.serializer_class(api_resp)
         return serializer.serialized
@@ -77,6 +87,9 @@ class BaseAPI(object):
 
         if params is not None:
             kwargs['params'] = params
+            for param_key, param_val in params.items():
+                if isinstance(param_val, datetime.datetime):
+                    kwargs['params'][param_key] = datetime_to_iso_format(param_val)
 
         resp = getattr(requests, method)(full_path, **kwargs)
 

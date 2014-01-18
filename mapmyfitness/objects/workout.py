@@ -1,5 +1,5 @@
-from mapmyfitness.utils import privacy_enum_to_string, iso_format_to_datetime
 from .base import BaseObject
+from ..utils import privacy_enum_to_string, iso_format_to_datetime
 
 
 class WorkoutObject(BaseObject):
@@ -30,6 +30,24 @@ class WorkoutObject(BaseObject):
     @property
     def source(self):
         return self.original_dict['source']
+
+    @property
+    def has_time_series(self):
+        return self.original_dict['has_time_series']
+
+    @property
+    def time_series(self):
+        if self.has_time_series:
+            if 'time_series' in self.original_dict:
+                return self.original_dict['time_series']
+            elif hasattr(self, '_time_series'):
+                return self._time_series
+            else:
+                from mapmyfitness import MapMyFitness
+                instance = MapMyFitness.instance()
+                workout = instance.workout.find(self.id)
+                self._time_series = workout.time_series
+                return self._time_series
 
     #
     # Aggregates

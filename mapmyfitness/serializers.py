@@ -1,5 +1,5 @@
-from mapmyfitness.objects.route import RouteObject
-from mapmyfitness.objects.workout import WorkoutObject
+from .objects.route import RouteObject
+from .objects.workout import WorkoutObject
 
 
 class BaseSerializer(object):
