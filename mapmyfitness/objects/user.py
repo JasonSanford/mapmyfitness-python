@@ -1,4 +1,3 @@
-from mapmyfitness.utils import privacy_enum_to_string, iso_format_to_datetime
 from .base import BaseObject
 
 
