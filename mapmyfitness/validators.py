@@ -174,3 +174,11 @@ class WorkoutValidator(BaseValidator):
 
         if 'activity_type' in search_kwargs and not isinstance(search_kwargs['activity_type'], int):
             self.add_error('Workout activity_type must be of type int.')
+
+
+class UserValidator(BaseValidator):
+    def validate_create(self):
+        pass
+
+    def validate_search(self):
+        pass
