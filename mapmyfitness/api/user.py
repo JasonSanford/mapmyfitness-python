@@ -10,4 +10,4 @@ class User(BaseAPI, Searchable, Findable):
     validator_class = UserValidator
     inflator_class = UserInflator
     serializer_class = UserSerializer
-    embedded_name = 'users'
+    embedded_name = 'user'
