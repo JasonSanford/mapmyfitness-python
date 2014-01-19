@@ -19,7 +19,6 @@ class UserObject(BaseObject):
     def id(self):
         return int(self.original_dict['_links']['self'][0]['id'])
 
-
     @property
     def birthdate(self):
         return datetime.date.strptime(self.original_dict['birthdate'], '%Y-%m-%d')
