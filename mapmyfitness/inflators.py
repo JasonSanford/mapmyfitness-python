@@ -48,15 +48,3 @@ class WorkoutInflator(BaseInflator):
                 inflated['aggregates'][aggregate_value] = inflated[aggregate_value]
 
         self.inflated = inflated
-
-
-class UserInflator(BaseInflator):
-    def inflate(self):
-        inflated = copy.deepcopy(self.initial_obj)
-
-        inflated['last_initial'] = inflated['last_name'][0]
-
-        birthdate = inflated['birthdate']
-        inflated['birthdate'] = birthdate.strftime('%Y-%m-%d')
-
-        self.inflated = inflated

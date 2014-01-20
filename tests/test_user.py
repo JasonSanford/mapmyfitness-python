@@ -39,6 +39,56 @@ class UserTest(MapMyFitnessTestCase):
         user = self.mmf.user.find(9118466)
         self.assertEqual(user.id, 9118466)
 
+    def test_search_no_params(self):
+        try:
+            self.mmf.user.search()
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'Either a friends_with, requested_friendship_with or suggested_friends_for argument must be passed to search for users.')
+
+    def test_search_bad_friends_with(self):
+        try:
+            self.mmf.user.search(friends_with='lobster')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'User friends_with must be of type int.')
+
+    def test_search_bad_requested_friendship_with(self):
+        try:
+            self.mmf.user.search(requested_friendship_with='lobster')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'User requested_friendship_with must be of type int.')
+
+    def test_search_suggested_friends_for_no_extra_params(self):
+        try:
+            self.mmf.user.search(suggested_friends_for=9118466)
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'User suggested_friends_source or suggested_friends_emails must exist when searching users via suggested_friends_for.')
+
+    def test_search_suggested_friends_for_bad_source(self):
+        try:
+            self.mmf.user.search(suggested_friends_for=9118466, suggested_friends_source='myspace')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'User suggested_friends_source must be "facebook".')
+
+    def test_search_suggested_friends_for_empty_email(self):
+        try:
+            self.mmf.user.search(suggested_friends_for=9118466, suggested_friends_emails='')
+        except Exception as exc:
+            self.assertIsInstance(exc, InvalidSearchArgumentsException)
+            self.assertEqual(str(exc), 'User suggested_friends_emails must not be empty.')
+
+    @httpretty.activate
+    def test_search_friends_with(self):
+        uri = self.uri_root + '/user/?friends_with=9118466'
+        content_returned = '{"_embedded":{"user":[{"username":"adam.mcmanus","first_name":"Adam","last_name":"McManus","display_name":"Adam M.","last_initial":"M.","_links":{"image":[{"href":"/v7.0/user_profile_photo/1039389/","id":"1039389","name":"user_profile_photo"}],"self":[{"href":"/v7.0/user/1039389/","id":"1039389"}],"privacy":[{"href":"/v7.0/privacy_option/3/","id":"3","name":"profile"}]},"id":1039389},{"username":"Ahawks","first_name":"AJ","last_name":"Hawks","display_name":"AJ H.","last_initial":"H.","_links":{"image":[{"href":"/v7.0/user_profile_photo/1537259/","id":"1537259","name":"user_profile_photo"}],"self":[{"href":"/v7.0/user/1537259/","id":"1537259"}],"privacy":[{"href":"/v7.0/privacy_option/1/","id":"1","name":"profile"}]},"id":1537259}]},"_links":{"self":[{"href":"/v7.0/user/?limit=20&friends_with=9118466&offset=0"}],"documentation":[{"href":"https://developer.mapmyapi.com/docs/User"}],"next":[{"href":"/v7.0/user/?limit=20&friends_with=9118466&offset=20"}]},"total_count":52}'
+        httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
+        users = self.mmf.user.search(friends_with=9118466)
+        self.assertEqual(len(users), 2)
+
     def test_serializer(self):
         user_json = {"username":"JasonSanford","first_name":"Jason","last_name":"Sanford","display_name":"Jason Sanford","last_initial":"S.","weight":91.17206637,"communication":{"promotions":True,"newsletter":True,"system_messages":True},"display_measurement_system":"imperial","time_zone":"America/Denver","birthdate":"1983-04-15","height":1.778,"sharing":{"twitter":False,"facebook":False},"last_login":"2014-01-16T03:43:16+00:00","location":{"country":"US","region":"CO","address":"7910 S BemisSt","locality":"Littleton"},"gender":"M","id":9118466,"_links":{"stats":[{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=month","id":"9118466","name":"month"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=year","id":"9118466","name":"year"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=day","id":"9118466","name":"day"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=week","id":"9118466","name":"week"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=lifetime","id":"9118466","name":"lifetime"}],"privacy":[{"href":"/v7.0/privacy_option/3/","id":"3","name":"profile"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"workout"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"activity_feed"},{"href":"/v7.0/privacy_option/1/","id":"1","name":"food_log"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"email_search"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"route"}],"image":[{"href":"/v7.0/user_profile_photo/9118466/","id":"9118466","name":"user_profile_photo"}],"documentation":[{"href":"https://developer.mapmyapi.com/docs/User"}],"deactivation":[{"href":"/v7.0/user_deactivation/"}],"friendships":[{"href":"/v7.0/friendship/?from_user=9118466"}],"workouts":[{"href":"/v7.0/workout/?user=9118466&order_by=-start_datetime"}],"self":[{"href":"/v7.0/user/9118466/","id":"9118466"}]},"email":"jasonsanford@gmail.com","date_joined":"2011-08-26T06:06:19+00:00"}
         serializer = UserSerializer(user_json)
