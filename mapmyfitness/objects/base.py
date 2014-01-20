@@ -7,12 +7,14 @@ class BaseObject(object):
 
         if hasattr(self, 'simple_properties'):
             for property_key, property_name in self.simple_properties.items():
-                if property_name is None:
-                    property_name = property_key
-                setattr(self, property_name, self.original_dict[property_key])
+                if property_key in self.original_dict:
+                    if property_name is None:
+                        property_name = property_key
+                    setattr(self, property_name, self.original_dict[property_key])
 
         if hasattr(self, 'datetime_properties'):
             for property_key, property_name in self.datetime_properties.items():
-                if property_name is None:
-                    property_name = property_key
-                setattr(self, property_name, iso_format_to_datetime(self.original_dict[property_key]))
+                if property_key in self.original_dict:
+                    if property_name is None:
+                        property_name = property_key
+                    setattr(self, property_name, iso_format_to_datetime(self.original_dict[property_key]))
