@@ -28,7 +28,8 @@ class UserObject(BaseObject):
     @property
     def birthdate(self):
         if 'birthdate' in self.original_dict:
-            return datetime.date.strptime(self.original_dict['birthdate'], '%Y-%m-%d')
+            dt = datetime.datetime.strptime(self.original_dict['birthdate'], '%Y-%m-%d')
+            return dt.date()
 
     @property
     def email(self):
