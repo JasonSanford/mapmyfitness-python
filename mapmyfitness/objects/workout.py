@@ -1,39 +1,20 @@
 from .base import BaseObject
-from ..utils import privacy_enum_to_string, iso_format_to_datetime
+from ..utils import privacy_enum_to_string
 
 
 class WorkoutObject(BaseObject):
+    simple_properties = {
+        'name': None, 'start_locale_timezone': None, 'source': None,
+        'has_time_series': None,
+    }
+
+    datetime_properties = {
+        'start_datetime': None, 'created_datetime': None, 'updated_datetime': None,
+    }
+
     @property
     def id(self):
         return int(self.original_dict['_links']['self'][0]['id'])
-
-    @property
-    def name(self):
-        return self.original_dict['name']
-
-    @property
-    def start_datetime(self):
-        return iso_format_to_datetime(self.original_dict['start_datetime'])
-
-    @property
-    def created_datetime(self):
-        return iso_format_to_datetime(self.original_dict['created_datetime'])
-
-    @property
-    def updated_datetime(self):
-        return iso_format_to_datetime(self.original_dict['updated_datetime'])
-
-    @property
-    def start_locale_timezone(self):
-        return self.original_dict['start_locale_timezone']
-
-    @property
-    def source(self):
-        return self.original_dict['source']
-
-    @property
-    def has_time_series(self):
-        return self.original_dict['has_time_series']
 
     @property
     def time_series(self):

@@ -1,5 +1,6 @@
 from .objects.route import RouteObject
 from .objects.workout import WorkoutObject
+from .objects.user import UserObject
 
 
 class BaseSerializer(object):
@@ -14,3 +15,7 @@ class RouteSerializer(BaseSerializer):
 
 class WorkoutSerializer(BaseSerializer):
     object_class = WorkoutObject
+
+
+class UserSerializer(BaseSerializer):
+    object_class = UserObject

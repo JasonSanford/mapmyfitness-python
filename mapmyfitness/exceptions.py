@@ -28,3 +28,7 @@ class InternalServerErrorException(Exception):
 
 class ValidatorException(Exception):
     """There was an error creating the validator."""
+
+
+class AttributeNotFoundException(Exception):
+    """The attribute you requested does not exist."""
