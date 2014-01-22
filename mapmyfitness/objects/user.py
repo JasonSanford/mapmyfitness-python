@@ -1,6 +1,8 @@
 import datetime
+import inspect
 
 from .base import BaseObject
+from ..exceptions import AttributeNotFoundException
 
 
 class UserObject(BaseObject):
@@ -15,10 +17,17 @@ class UserObject(BaseObject):
     }
 
     def __getattr__(self, name):
+        # First checking to see if we're entering a recursion
+        # cycle, and if so exiting immediately. Calling `hasattr(self, name)`
+        # will call getattr(self, name) itself and therefore keep recursing.
+        if '__getattr__' in inspect.stack()[1]:
+            raise AttributeNotFoundException
+
         from mapmyfitness import MapMyFitness
         instance = MapMyFitness.instance()
         user = instance.user.find(self.id)
         self.__init__(user.original_dict)
+
         return getattr(self, name)
 
     @property
