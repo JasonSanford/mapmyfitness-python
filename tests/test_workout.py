@@ -4,6 +4,7 @@ import datetime
 import httpretty
 
 from mapmyfitness.exceptions import BadRequestException, InvalidObjectException, InvalidSearchArgumentsException
+from mapmyfitness.objects.route import RouteObject
 from mapmyfitness.objects.workout import WorkoutObject
 from mapmyfitness.serializers import WorkoutSerializer
 from mapmyfitness.utils import iso_format_to_datetime
@@ -14,13 +15,28 @@ from tests.valid_objects import workout as valid_workout
 
 class WorkoutTest(MapMyFitnessTestCase):
     @httpretty.activate
-    def test_find_with_route(self):
+    def test_find_with_route_id(self):
         uri = self.uri_root + '/workout/93093928'
         content_returned = '{"start_locale_timezone": "America/Denver", "source": "UnknownFile(http://ridewithgps.com/:gpx)", "start_datetime": "2011-06-22T15:27:00+00:00", "_links": {"self": [{"href": "/v7.0/workout/93093928/", "id": "93093928"}], "route": [{"href": "/v7.0/route/68443498/", "id": "68443498"}], "activity_type": [{"href": "/v7.0/activity_type/11/", "id": "11"}], "user": [{"href": "/v7.0/user/9118466/", "id": "9118466"}], "privacy": [{"href": "/v7.0/privacy_option/1/", "id": "1"}]}, "name": "Bike to Work Day - return", "updated_datetime": "2012-02-09T19:15:38+00:00", "created_datetime": "2012-02-09T19:14:43+00:00", "aggregates": {"active_time_total": 4119, "distance_total": 20985.84576, "speed_max": 25.179483296000001, "steps_total": 0, "speed_avg": 5.0948701759999997, "elapsed_time_total": 4080, "metabolic_energy_total": 2422536}, "has_time_series": true, "reference_key": "2011-06-2215:27:08+00:00"}'
         httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
         workout = self.mmf.workout.find(93093928)
         self.assertEqual(workout.id, 93093928)
         self.assertEqual(workout.route_id, 68443498)
+
+    @httpretty.activate
+    def test_find_with_route(self):
+        uri_workout = self.uri_root + '/workout/93093928'
+        uri_route = self.uri_root + '/route/68443498'
+
+        content_returned_workout = '{"start_locale_timezone": "America/Denver", "source": "UnknownFile(http://ridewithgps.com/:gpx)", "start_datetime": "2011-06-22T15:27:00+00:00", "_links": {"self": [{"href": "/v7.0/workout/93093928/", "id": "93093928"}], "route": [{"href": "/v7.0/route/68443498/", "id": "68443498"}], "activity_type": [{"href": "/v7.0/activity_type/11/", "id": "11"}], "user": [{"href": "/v7.0/user/9118466/", "id": "9118466"}], "privacy": [{"href": "/v7.0/privacy_option/1/", "id": "1"}]}, "name": "Bike to Work Day - return", "updated_datetime": "2012-02-09T19:15:38+00:00", "created_datetime": "2012-02-09T19:14:43+00:00", "aggregates": {"active_time_total": 4119, "distance_total": 20985.84576, "speed_max": 25.179483296000001, "steps_total": 0, "speed_avg": 5.0948701759999997, "elapsed_time_total": 4080, "metabolic_energy_total": 2422536}, "has_time_series": true, "reference_key": "2011-06-2215:27:08+00:00"}'
+        content_returned_route = '{"total_descent": null, "city": "Denver", "data_source": "run:RE", "description": "", "updated_datetime": "2014-01-06T22:26:50+00:00", "created_datetime": "2014-01-06T23:26:18+00:00", "country": "us", "start_point_type": "", "starting_location": {"type": "Point", "coordinates": [-104.99652, 39.7499]}, "points": null, "name": "Tuesday Lunch Run", "climbs": null, "state": "CO", "max_elevation": null, "postal_code": "80202", "min_elevation": null, "total_ascent": null, "_links": {"activity_types": [{"href": "/v7.0/activity_type/16/", "id": "16"}], "privacy": [{"href": "/v7.0/privacy_option/0/", "id": "0"}], "self": [{"href": "/v7.0/route/342208467/", "id": "342208467"}], "alternate": [{"href": "/v7.0/route/342208467/?format=kml&field_set=detailed", "id": "342208467", "name": "kml"}], "user": [{"href": "/v7.0/user/1/", "id": "1"}], "thumbnail": [{"href": "//images.mapmycdn.com/routes/thumbnail/342208467?size=100x100"}], "documentation": [{"href": "https://developer.mapmyapi.com/docs/Route"}]}, "distance": 5506.3582910718}'
+
+        httpretty.register_uri(httpretty.GET, uri_workout, body=content_returned_workout, status=200)
+        httpretty.register_uri(httpretty.GET, uri_route, body=content_returned_route, status=200)
+
+        workout = self.mmf.workout.find(93093928)
+        self.assertIsInstance(workout.route, RouteObject)
+        self.assertEqual(workout.route.name, 'Tuesday Lunch Run')
 
     @httpretty.activate
     def test_find_no_route(self):
