@@ -1,6 +1,6 @@
 from .base import BaseAPI
 from ..inflators import WorkoutInflator
-from ..validators import WorkoutValidator
+from ..validators.workout import WorkoutValidator
 from ..serializers import WorkoutSerializer
 from .mixins import Deleteable, Searchable, Createable, Findable, Updateable
 
