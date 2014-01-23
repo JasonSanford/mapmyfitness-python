@@ -1,6 +1,6 @@
 from .api.config import APIConfig
 from .api.route import Route
-from .api.user import User
+from .api.user import User, UserProfilePhoto
 from .api.workout import Workout
 from .exceptions import NotInitializedException
 
@@ -24,6 +24,7 @@ class MapMyFitness(object):
         self.route = Route(api_config=api_config)
         self.workout = Workout(api_config=api_config)
         self.user = User(api_config=api_config)
+        self._user_profile_photo = UserProfilePhoto(api_config=api_config)
 
     @classmethod
     def instance(cls):

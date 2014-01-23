@@ -2,7 +2,7 @@ import datetime
 import inspect
 
 from .base import BaseObject
-from ..exceptions import AttributeNotFoundException
+from ..exceptions import AttributeNotFoundException, InvalidSizeException
 
 
 class UserObject(BaseObject):
@@ -59,3 +59,25 @@ class UserObject(BaseObject):
     def height(self):
         if 'height' in self.original_dict:
             return self.original_dict['height']
+
+    def get_profile_photo(self, size='medium'):
+        if size not in ('small', 'medium', 'large'):
+            raise InvalidSizeException('User get_profile_photo size must one of "small", "medium" or "large".')
+        from mapmyfitness import MapMyFitness
+        instance = MapMyFitness.instance()
+        user_profile_photo = instance._user_profile_photo.find(self.id)
+        return getattr(user_profile_photo, size)
+
+
+class UserProfilePhotoObject(BaseObject):
+    @property
+    def small(self):
+        return self.original_dict['_links']['small'][0]['href']
+
+    @property
+    def medium(self):
+        return self.original_dict['_links']['medium'][0]['href']
+
+    @property
+    def large(self):
+        return self.original_dict['_links']['large'][0]['href']

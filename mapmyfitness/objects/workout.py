@@ -66,9 +66,18 @@ class WorkoutObject(BaseObject):
         if 'speed_avg' in self.original_dict['aggregates']:
             return self.original_dict['aggregates']['speed_avg']
 
-    #
-    # Links - TODO: return not _id, but the actual object
-    #
+    @property
+    def route(self):
+        if self.route_id:
+            if hasattr(self, '_route'):
+                return self._route
+            else:
+                from mapmyfitness import MapMyFitness
+                instance = MapMyFitness.instance()
+                route = instance.route.find(self.route_id)
+                self._route = route
+                return self._route
+
     @property
     def route_id(self):
         links = self.original_dict['_links']
