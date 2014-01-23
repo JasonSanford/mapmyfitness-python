@@ -1,6 +1,6 @@
 from .base import BaseAPI
 from ..inflators import RouteInflator
-from ..validators import RouteValidator
+from ..validators.route import RouteValidator
 from ..serializers import RouteSerializer
 from .mixins import Deleteable, Searchable, Createable, Findable, Updateable
 

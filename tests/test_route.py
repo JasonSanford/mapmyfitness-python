@@ -8,7 +8,7 @@ from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObje
 from mapmyfitness.objects.route import RouteObject
 from mapmyfitness.serializers import RouteSerializer
 from mapmyfitness.utils import iso_format_to_datetime
-from mapmyfitness.validators import RouteValidator
+from mapmyfitness.validators.route import RouteValidator
 
 from tests import MapMyFitnessTestCase
 from tests.valid_objects import route as valid_route

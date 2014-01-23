@@ -1,5 +1,5 @@
 from .base import BaseAPI
-from ..validators import UserValidator
+from ..validators.user import UserValidator
 from ..serializers import UserSerializer
 from .mixins import Searchable, Findable
 
