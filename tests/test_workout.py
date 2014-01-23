@@ -37,11 +37,8 @@ class WorkoutTest(MapMyFitnessTestCase):
         uri = self.uri_root + '/workout/'
         content_returned = '{"_diagnostics":{"validation_failures":[["user filter required"]]},"_links":{"self":[{"href":"\/v7.0\/workout\/?limit=20&offset=0"}],"documentation":[{"href":"https:\/\/developer.mapmyapi.com\/docs\/Workout"}]}}'
         httpretty.register_uri(httpretty.POST, uri, body=content_returned, status=400)
-        try:
-            self.mmf.workout.create(valid_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, BadRequestException)
-            self.assertEqual(str(exc), 'user filter required.')
+        self.assertRaisesRegexp(BadRequestException, 'user filter required.',
+                                self.mmf.workout.create, valid_workout)
 
     @httpretty.activate
     def test_create_success(self):
@@ -56,77 +53,61 @@ class WorkoutTest(MapMyFitnessTestCase):
     def test_create_no_activity_type(self):
         a_workout = copy.deepcopy(valid_workout)
         del a_workout['activity_type']
-        try:
-            self.mmf.workout.create(a_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidObjectException)
-            self.assertEqual(str(exc), 'Workout activity_type must exist and be of type int.')
+        self.assertRaisesRegexp(InvalidObjectException,
+                                'Workout activity_type must exist and be of type int.',
+                                self.mmf.workout.create, a_workout)
 
     def test_create_no_start_datetime(self):
         a_workout = copy.deepcopy(valid_workout)
         del a_workout['start_datetime']
-        try:
-            self.mmf.workout.create(a_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidObjectException)
-            self.assertEqual(str(exc), 'Workout start_datetime must exist and be of type datetime.datetime.')
+        self.assertRaisesRegexp(InvalidObjectException,
+                                'Workout start_datetime must exist and be of type datetime.datetime.',
+                                self.mmf.workout.create, a_workout)
 
     def test_create_bad_aggregate(self):
         a_workout = copy.deepcopy(valid_workout)
         a_workout['active_time_total'] = 'lobster'
-        try:
-            self.mmf.workout.create(a_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidObjectException)
-            self.assertEqual(str(exc), 'Workout active_time_total must be of type int or float.')
+        self.assertRaisesRegexp(InvalidObjectException,
+                                'Workout active_time_total must be of type int or float.',
+                                self.mmf.workout.create, a_workout)
 
     def test_create_bad_position(self):
         a_workout = copy.deepcopy(valid_workout)
         a_workout['time_series']['position'][0].append('lobster')
-        try:
-            self.mmf.workout.create(a_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidObjectException)
-            self.assertEqual(str(exc), 'Workout time_series position must be a 2-list with the first item being of type int or float and the second item being a dict.')
+        self.assertRaisesRegexp(InvalidObjectException,
+                                'Workout time_series position must be a 2-list with the first item being of type int or float and the second item being a dict.',
+                                self.mmf.workout.create, a_workout)
 
     def test_create_missing_lat(self):
         a_workout = copy.deepcopy(valid_workout)
         del a_workout['time_series']['position'][0][1]['lat']
-        try:
-            self.mmf.workout.create(a_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidObjectException)
-            self.assertEqual(str(exc), 'Workout time_series position dict must have a lat key and be of type int or float.')
+        self.assertRaisesRegexp(InvalidObjectException,
+                                'Workout time_series position dict must have a lat key and be of type int or float.',
+                                self.mmf.workout.create, a_workout)
 
     def test_create_bad_time_series(self):
         a_workout = copy.deepcopy(valid_workout)
         a_workout['time_series']['heartrate'][0].append('lobster')
-        try:
-            self.mmf.workout.create(a_workout)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidObjectException)
-            self.assertEqual(str(exc), 'Workout time_series heartrate must be a 2-list with each item being of type int or float.')
+        self.assertRaisesRegexp(InvalidObjectException,
+                                'Workout time_series heartrate must be a 2-list with each item being of type int or float.',
+                                self.mmf.workout.create, a_workout)
 
     def test_search_no_user(self):
-        try:
-            self.mmf.workout.search()
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'Workout user must exist and be of type int.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'Workout user must exist and be of type int.',
+                                self.mmf.workout.search)
 
     def test_search_bad_date(self):
-        try:
-            self.mmf.workout.search(user=1234, created_after='not_a_date')
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'Workout created_after must be of type datetime.datetime.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'Workout created_after must be of type datetime.datetime.',
+                                self.mmf.workout.search,
+                                **{'user': 1234, 'created_after': 'not_a_date'})
 
     def test_search_bad_activity_type(self):
-        try:
-            self.mmf.workout.search(user=1234, activity_type='lobster')
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'Workout activity_type must be of type int.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'Workout activity_type must be of type int.',
+                                self.mmf.workout.search,
+                                **{'user': 1234, 'activity_type': 'lobster'})
 
     @httpretty.activate
     def test_search_then_time_series(self):

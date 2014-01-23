@@ -16,12 +16,7 @@ class MapMyFitnessSingleton(MapMyFitnessTestCase):
 
     def test_MapMyFitness_singleton_not_initialized(self):
         MapMyFitness._drop()
-        try:
-            MapMyFitness.instance()
-        except NotInitializedException:
-            pass
-        else:
-            assert False  # We should have raised the exception
+        self.assertRaises(NotInitializedException, MapMyFitness.instance)
 
     def test_MapMyFitness_instance(self):
         MapMyFitness('api-key', 'access_token')

@@ -42,46 +42,38 @@ class UserTest(MapMyFitnessTestCase):
         self.assertEqual(user.id, 9118466)
 
     def test_search_no_params(self):
-        try:
-            self.mmf.user.search()
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'Either a friends_with, requested_friendship_with or suggested_friends_for argument must be passed to search for users.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'Either a friends_with, requested_friendship_with or suggested_friends_for argument must be passed to search for users.',
+                                self.mmf.user.search)
 
     def test_search_bad_friends_with(self):
-        try:
-            self.mmf.user.search(friends_with='lobster')
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'User friends_with must be of type int.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'User friends_with must be of type int.',
+                                self.mmf.user.search, **{'friends_with': 'lobster'})
 
     def test_search_bad_requested_friendship_with(self):
-        try:
-            self.mmf.user.search(requested_friendship_with='lobster')
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'User requested_friendship_with must be of type int.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'User requested_friendship_with must be of type int.',
+                                self.mmf.user.search,
+                                **{'requested_friendship_with': 'lobster'})
 
     def test_search_suggested_friends_for_no_extra_params(self):
-        try:
-            self.mmf.user.search(suggested_friends_for=9118466)
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'User suggested_friends_source or suggested_friends_emails must exist when searching users via suggested_friends_for.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'User suggested_friends_source or suggested_friends_emails must exist when searching users via suggested_friends_for.',
+                                self.mmf.user.search,
+                                **{'suggested_friends_for': 9118466})
 
     def test_search_suggested_friends_for_bad_source(self):
-        try:
-            self.mmf.user.search(suggested_friends_for=9118466, suggested_friends_source='myspace')
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'User suggested_friends_source must be "facebook".')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'User suggested_friends_source must be "facebook".',
+                                self.mmf.user.search,
+                                **{'suggested_friends_for': 9118466, 'suggested_friends_source': 'myspace'})
 
     def test_search_suggested_friends_for_empty_email(self):
-        try:
-            self.mmf.user.search(suggested_friends_for=9118466, suggested_friends_emails='')
-        except Exception as exc:
-            self.assertIsInstance(exc, InvalidSearchArgumentsException)
-            self.assertEqual(str(exc), 'User suggested_friends_emails must not be empty.')
+        self.assertRaisesRegexp(InvalidSearchArgumentsException,
+                                'User suggested_friends_emails must not be empty.',
+                                self.mmf.user.search,
+                                **{'suggested_friends_for': 9118466, 'suggested_friends_emails': ''})
 
     @httpretty.activate
     def test_search_friends_with(self):
