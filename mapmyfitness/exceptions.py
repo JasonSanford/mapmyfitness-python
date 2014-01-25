@@ -22,6 +22,10 @@ class InvalidSearchArgumentsException(Exception):
     """Invalid arguments were passed when searching."""
 
 
+class InvalidSizeException(Exception):
+    """Invalid size."""
+
+
 class InternalServerErrorException(Exception):
     """There was an error while processing your request."""
 

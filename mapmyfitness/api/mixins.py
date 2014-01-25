@@ -48,7 +48,6 @@ class Updateable(object):
         self.validator = self.validator_class(obj)
         if not self.validator.valid:
             raise InvalidObjectException(self.validator)
-
         inflator = self.inflator_class(obj)
         data = inflator.inflated
 
