@@ -11,7 +11,11 @@ class NotInitializedException(Exception):
 
 
 class UnauthorizedException(Exception):
-    """The API key supplied is not authorized to access this resource."""
+    """The request authentication failed. The OAuth credentials that the client supplied were missing or invalid."""
+
+
+class ForbiddenException(Exception):
+    """The request credentials authenticated, but the requesting user or client app is not authorized to access the given resource."""
 
 
 class InvalidObjectException(Exception):

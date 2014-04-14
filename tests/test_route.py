@@ -4,7 +4,7 @@ import json
 import httpretty
 
 from mapmyfitness.constants import PUBLIC
-from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException, InternalServerErrorException, BadRequestException
+from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException, ValidatorException, InternalServerErrorException, BadRequestException, UnauthorizedException
 from mapmyfitness.objects.route import RouteObject
 from mapmyfitness.serializers import RouteSerializer
 from mapmyfitness.utils import iso_format_to_datetime
@@ -131,6 +131,14 @@ class RouteTest(MapMyFitnessTestCase):
         self.assertRaisesRegexp(BadRequestException,
                                 'points This field is required.',
                                 self.mmf.route.create, valid_route)
+
+    @httpretty.activate
+    def test_401(self):
+        uri = self.uri_root + '/route/?field_set=detailed&user=9118466'
+        content_returned = '{"oauth1_error": "Malformed authorization header", "oauth1_error_code": "OAUTH1:UNKNOWN", "oauth2_error": "AccessToken not found.", "oauth2_error_code": "OAUTH2:ACCESSTOKEN_NOT_FOUND"}'
+        httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=401)
+        self.assertRaises(UnauthorizedException,
+                          self.mmf.route.search, **{'user': 9118466})
 
     @httpretty.activate
     def test_update(self):

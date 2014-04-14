@@ -3,14 +3,15 @@ import json
 
 import requests
 
-from ..exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException
+from ..exceptions import BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException, ForbiddenException
 from ..utils import datetime_to_iso_format
 
 
 class BaseAPI(object):
     http_exception_map = {
         400: BadRequestException,
-        403: UnauthorizedException,
+        401: UnauthorizedException,
+        403: ForbiddenException,
         404: NotFoundException,
         500: InternalServerErrorException,
     }
