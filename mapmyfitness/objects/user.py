@@ -68,6 +68,12 @@ class UserObject(BaseObject):
         user_profile_photo = instance._user_profile_photo.find(self.id)
         return getattr(user_profile_photo, size)
 
+    def get_friends(self):
+        from mapmyfitness import MapMyFitness
+        instance = MapMyFitness.instance()
+        friends = instance.user.search(friends_with=self.id)
+        return friends
+
 
 class UserProfilePhotoObject(BaseObject):
     @property
