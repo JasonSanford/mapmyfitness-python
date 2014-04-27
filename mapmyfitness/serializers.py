@@ -1,3 +1,4 @@
+from .objects.activity_type import ActivityTypeObject
 from .objects.route import RouteObject
 from .objects.workout import WorkoutObject
 from .objects.user import UserObject, UserProfilePhotoObject
@@ -23,3 +24,7 @@ class UserSerializer(BaseSerializer):
 
 class UserProfilePhotoSerializer(BaseSerializer):
     object_class = UserProfilePhotoObject
+
+
+class ActivityTypeSerializer(BaseSerializer):
+    object_class = ActivityTypeObject
