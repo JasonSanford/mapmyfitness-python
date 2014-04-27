@@ -89,6 +89,17 @@ class WorkoutObject(BaseObject):
         return int(self.original_dict['_links']['activity_type'][0]['id'])
 
     @property
+    def activity_type(self):
+        if hasattr(self, '_activity_type'):
+            return self._activity_type
+        else:
+            from mapmyfitness import MapMyFitness
+            instance = MapMyFitness.instance()
+            activity_type = instance.activity_type.find(self.activity_type_id)
+            self._activity_type = activity_type
+            return self._activity_type
+
+    @property
     def privacy(self):
         privacy_enum = int(self.original_dict['_links']['privacy'][0]['id'])
         return privacy_enum_to_string(privacy_enum)
