@@ -16,8 +16,9 @@ class BaseAPI(object):
         500: InternalServerErrorException,
     }
 
-    def __init__(self, api_config):
+    def __init__(self, api_config, cache_finds):
         self.api_config = api_config
+        self.cache_finds = cache_finds
 
     def call(self, method, path, data=None, extra_headers=None, params=None):
         full_path = self.api_config.api_root + path
