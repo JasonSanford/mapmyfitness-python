@@ -63,7 +63,6 @@ class Findable(object):
     def find(self, id):
         cache_name = self._cache_name(id)
         if self.cache_finds and hasattr(self, cache_name):
-            print('Got cached value for {}'.format(cache_name))
             return getattr(self, cache_name)
         else:
             params = None
