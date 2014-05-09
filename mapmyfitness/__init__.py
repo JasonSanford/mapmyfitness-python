@@ -20,13 +20,13 @@ class MapMyFitness(object):
 
         return cls._instance
 
-    def __init__(self, api_key, access_token):
+    def __init__(self, api_key, access_token, cache_finds=False):
         api_config = APIConfig(api_key=api_key, access_token=access_token)
-        self.route = Route(api_config=api_config)
-        self.workout = Workout(api_config=api_config)
-        self.user = User(api_config=api_config)
-        self._user_profile_photo = UserProfilePhoto(api_config=api_config)
-        self.activity_type = ActivityType(api_config=api_config)
+        self.route = Route(api_config=api_config, cache_finds=cache_finds)
+        self.workout = Workout(api_config=api_config, cache_finds=cache_finds)
+        self.user = User(api_config=api_config, cache_finds=cache_finds)
+        self._user_profile_photo = UserProfilePhoto(api_config=api_config, cache_finds=cache_finds)
+        self.activity_type = ActivityType(api_config=api_config, cache_finds=cache_finds)
 
     @classmethod
     def instance(cls):
