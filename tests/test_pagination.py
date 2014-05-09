@@ -45,7 +45,7 @@ class PaginationTest(MapMyFitnessTestCase):
 
         workouts_paginator = self.mmf.workout.search(user=9118466, started_after=datetime.datetime(2014, 4, 1), per_page=2)
 
-        self.assertEqual(workouts_paginator.page_range, [1, 2])
+        self.assertTrue((workouts_paginator.page_range == [1, 2]) or (workouts_paginator.page_range == range(1, 3)))
 
         page1 = workouts_paginator.page(1)
         page2 = workouts_paginator.page(2)
