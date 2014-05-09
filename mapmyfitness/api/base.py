@@ -41,7 +41,7 @@ class BaseAPI(object):
                     kwargs['params'][param_key] = datetime_to_iso_format(param_val)
 
         resp = getattr(requests, method)(full_path, **kwargs)
-
+        print(resp.content)
         if resp.status_code in self.http_exception_map:
             bad_request_json = resp.json()
             if resp.status_code == 400 and '_diagnostics' in bad_request_json and 'validation_failures' in bad_request_json['_diagnostics'] and len(bad_request_json['_diagnostics']['validation_failures']):

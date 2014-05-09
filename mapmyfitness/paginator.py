@@ -2,29 +2,18 @@ import collections
 import copy
 from math import ceil
 
-
-class InvalidPage(Exception):
-    pass
-
-
-class PageNotAnInteger(InvalidPage):
-    pass
-
-
-class EmptyPage(InvalidPage):
-    pass
+from mapmyfitness.exceptions import PageNotAnInteger, EmptyPage
 
 
 class Paginator(object):
     def __init__(self, initial_object_list, per_page, total_count,
-                 searchable, original_kwargs, orphans=0, allow_empty_first_page=True):
+                 searchable, original_kwargs, orphans=0):
         self.initial_object_list = initial_object_list
         self.per_page = per_page
         self.total_count = total_count
         self.searchable = searchable
         self.original_kwargs = original_kwargs
         self.orphans = int(orphans)
-        self.allow_empty_first_page = allow_empty_first_page
         self._num_pages = None
 
     def validate_number(self, number):
@@ -35,10 +24,7 @@ class Paginator(object):
         if number < 1:
             raise EmptyPage('That page number is less than 1')
         if number > self.num_pages:
-            if number == 1 and self.allow_empty_first_page:
-                pass
-            else:
-                raise EmptyPage('That page contains no results')
+            raise EmptyPage('That page contains no results')
         return number
 
     def page(self, number):
@@ -64,11 +50,8 @@ class Paginator(object):
 
     def _get_num_pages(self):
         if self._num_pages is None:
-            if self.count == 0 and not self.allow_empty_first_page:
-                self._num_pages = 0
-            else:
-                hits = max(1, self.count - self.orphans)
-                self._num_pages = int(ceil(hits / float(self.per_page)))
+            hits = max(1, self.count - self.orphans)
+            self._num_pages = int(ceil(hits / float(self.per_page)))
         return self._num_pages
     num_pages = property(_get_num_pages)
 
