@@ -40,3 +40,15 @@ class ValidatorException(Exception):
 
 class AttributeNotFoundException(Exception):
     """The attribute you requested does not exist."""
+
+
+class InvalidPage(Exception):
+    pass
+
+
+class PageNotAnInteger(InvalidPage):
+    pass
+
+
+class EmptyPage(InvalidPage):
+    pass

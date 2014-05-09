@@ -88,11 +88,12 @@ class RouteTest(MapMyFitnessTestCase):
     @httpretty.activate
     def test_all_user_success(self):
         uri = self.uri_root + '/route/?field_set=detailed&user=9118466'
-        content_returned = '{"_embedded": {"routes": [{"total_descent": -9.8980420904, "city": "Boston", "data_source": "MapMyRide", "description": "Easy and Quick daily run from Downtown Crossing", "updated_datetime": "2006-09-18T18:12:19+00:00", "created_datetime": "2006-09-18T18:12:19+00:00", "country": "us", "start_point_type": "", "starting_location": {"type": "Point", "coordinates": [-71.0617160797, 42.3561337597]}, "distance": 7998.43968, "total_ascent": 0.0, "climbs": [], "state": "MA", "points": [{"lat": 42.3561337597, "lng": -71.0617160797, "dis": 0.0, "ele": 30.28}, {"lat": 42.3562606124, "lng": -71.0616731644, "dis": 14.53, "ele": 30.5}], "postal_code": "02108", "min_elevation": 4.43, "_links": {"activity_types": [{"href": "/v7.0/activity_type/16/", "id": "16"}], "privacy": [{"href": "/v7.0/privacy_option/3/", "id": "3"}], "self": [{"href": "/v7.0/route/128262/", "id": "128262"}], "alternate": [{"href": "/v7.0/route/128262/?format=kml&field_set=detailed", "id": "128262", "name": "kml"}], "user": [{"href": "/v7.0/user/36142/", "id": "36142"}], "thumbnail": [{"href": "//images.mapmycdn.com/routes/thumbnail/128262?size=100x100"}]}, "max_elevation": 31.81, "name": "Regular Run 1"}]}}'
+        content_returned = '{"_embedded": {"routes": [{"total_descent": -9.8980420904, "city": "Boston", "data_source": "MapMyRide", "description": "Easy and Quick daily run from Downtown Crossing", "updated_datetime": "2006-09-18T18:12:19+00:00", "created_datetime": "2006-09-18T18:12:19+00:00", "country": "us", "start_point_type": "", "starting_location": {"type": "Point", "coordinates": [-71.0617160797, 42.3561337597]}, "distance": 7998.43968, "total_ascent": 0.0, "climbs": [], "state": "MA", "points": [{"lat": 42.3561337597, "lng": -71.0617160797, "dis": 0.0, "ele": 30.28}, {"lat": 42.3562606124, "lng": -71.0616731644, "dis": 14.53, "ele": 30.5}], "postal_code": "02108", "min_elevation": 4.43, "_links": {"activity_types": [{"href": "/v7.0/activity_type/16/", "id": "16"}], "privacy": [{"href": "/v7.0/privacy_option/3/", "id": "3"}], "self": [{"href": "/v7.0/route/128262/", "id": "128262"}], "alternate": [{"href": "/v7.0/route/128262/?format=kml&field_set=detailed", "id": "128262", "name": "kml"}], "user": [{"href": "/v7.0/user/36142/", "id": "36142"}], "thumbnail": [{"href": "//images.mapmycdn.com/routes/thumbnail/128262?size=100x100"}]}, "max_elevation": 31.81, "name": "Regular Run 1"}]},"total_count": 5}'
         httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
-        routes = self.mmf.route.search(user=9118466)
-        self.assertIsInstance(routes, list)
-        self.assertIsInstance(routes[0], RouteObject)
+        routes_paginator = self.mmf.route.search(user=9118466)
+        the_page = routes_paginator.page(1)
+        self.assertIsInstance(the_page.object_list, list)
+        self.assertIsInstance(the_page.object_list[0], RouteObject)
 
     def test_all_close_to_location_latlng_not_list(self):
         self.assertRaisesRegexp(InvalidSearchArgumentsException,

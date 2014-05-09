@@ -100,8 +100,9 @@ class UserTest(MapMyFitnessTestCase):
         uri = self.uri_root + '/user/?friends_with=9118466'
         content_returned = '{"_embedded":{"user":[{"username":"adam.mcmanus","first_name":"Adam","last_name":"McManus","display_name":"Adam M.","last_initial":"M.","_links":{"image":[{"href":"/v7.0/user_profile_photo/1039389/","id":"1039389","name":"user_profile_photo"}],"self":[{"href":"/v7.0/user/1039389/","id":"1039389"}],"privacy":[{"href":"/v7.0/privacy_option/3/","id":"3","name":"profile"}]},"id":1039389},{"username":"Ahawks","first_name":"AJ","last_name":"Hawks","display_name":"AJ H.","last_initial":"H.","_links":{"image":[{"href":"/v7.0/user_profile_photo/1537259/","id":"1537259","name":"user_profile_photo"}],"self":[{"href":"/v7.0/user/1537259/","id":"1537259"}],"privacy":[{"href":"/v7.0/privacy_option/1/","id":"1","name":"profile"}]},"id":1537259}]},"_links":{"self":[{"href":"/v7.0/user/?limit=20&friends_with=9118466&offset=0"}],"documentation":[{"href":"https://developer.mapmyapi.com/docs/User"}],"next":[{"href":"/v7.0/user/?limit=20&friends_with=9118466&offset=20"}]},"total_count":52}'
         httpretty.register_uri(httpretty.GET, uri, body=content_returned, status=200)
-        users = self.mmf.user.search(friends_with=9118466)
-        self.assertEqual(len(users), 2)
+        users_paginator = self.mmf.user.search(friends_with=9118466)
+        the_page = users_paginator.page(1)
+        self.assertEqual(len(the_page.object_list), 2)
 
     @httpretty.activate
     def test_search_friends_with_then_find_for_details(self):
@@ -114,8 +115,9 @@ class UserTest(MapMyFitnessTestCase):
         httpretty.register_uri(httpretty.GET, uri_search, body=content_returned_search, status=200)
         httpretty.register_uri(httpretty.GET, uri_find, body=content_returned_find, status=200)
 
-        users = self.mmf.user.search(friends_with=9118466)
-        user = users[0]
+        users_paginator = self.mmf.user.search(friends_with=9118466)
+        the_page = users_paginator.page(1)
+        user = the_page.object_list[0]
         self.assertEqual(user.location['locality'], 'Austin')
 
     @httpretty.activate
@@ -129,8 +131,9 @@ class UserTest(MapMyFitnessTestCase):
         httpretty.register_uri(httpretty.GET, uri_search, body=content_returned_search, status=200)
         httpretty.register_uri(httpretty.GET, uri_find, body=content_returned_find, status=200)
 
-        users = self.mmf.user.search(friends_with=9118466)
-        user = users[0]
+        users_paginator = self.mmf.user.search(friends_with=9118466)
+        the_page = users_paginator.page(1)
+        user = the_page.object_list[0]
         self.assertEqual(user.location['locality'], 'Austin')
         self.assertRaises(AttributeNotFoundException, lambda: user.shoe_size)
 
@@ -146,9 +149,10 @@ class UserTest(MapMyFitnessTestCase):
         httpretty.register_uri(httpretty.GET, uri_user_friends, body=content_returned_user_friends, status=200)
 
         user = self.mmf.user.find(9118466)
-        friends = user.get_friends()
-        self.assertIsInstance(friends, list)
-        self.assertTrue(isinstance(friends[0], UserObject) and friends[0].first_name == 'Adam')
+        friends_paginator = user.get_friends()
+        the_page = friends_paginator.page(1)
+        self.assertIsInstance(the_page.object_list, list)
+        self.assertTrue(isinstance(the_page.object_list[0], UserObject) and the_page.object_list[0].first_name == 'Adam')
 
     def test_serializer(self):
         user_json = {"username":"JasonSanford","first_name":"Jason","last_name":"Sanford","display_name":"Jason Sanford","last_initial":"S.","weight":91.17206637,"communication":{"promotions":True,"newsletter":True,"system_messages":True},"display_measurement_system":"imperial","time_zone":"America/Denver","birthdate":"1983-04-15","height":1.778,"sharing":{"twitter":False,"facebook":False},"last_login":"2014-01-16T03:43:16+00:00","location":{"country":"US","region":"CO","address":"7910 S BemisSt","locality":"Littleton"},"gender":"M","id":9118466,"_links":{"stats":[{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=month","id":"9118466","name":"month"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=year","id":"9118466","name":"year"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=day","id":"9118466","name":"day"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=week","id":"9118466","name":"week"},{"href":"/v7.0/user_stats/9118466/?aggregate_by_period=lifetime","id":"9118466","name":"lifetime"}],"privacy":[{"href":"/v7.0/privacy_option/3/","id":"3","name":"profile"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"workout"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"activity_feed"},{"href":"/v7.0/privacy_option/1/","id":"1","name":"food_log"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"email_search"},{"href":"/v7.0/privacy_option/3/","id":"3","name":"route"}],"image":[{"href":"/v7.0/user_profile_photo/9118466/","id":"9118466","name":"user_profile_photo"}],"documentation":[{"href":"https://developer.mapmyapi.com/docs/User"}],"deactivation":[{"href":"/v7.0/user_deactivation/"}],"friendships":[{"href":"/v7.0/friendship/?from_user=9118466"}],"workouts":[{"href":"/v7.0/workout/?user=9118466&order_by=-start_datetime"}],"self":[{"href":"/v7.0/user/9118466/","id":"9118466"}]},"email":"jasonsanford@gmail.com","date_joined":"2011-08-26T06:06:19+00:00"}

@@ -1,4 +1,7 @@
+import copy
+
 from mapmyfitness.exceptions import InvalidSearchArgumentsException, InvalidObjectException
+from mapmyfitness.paginator import Paginator
 
 
 class Deleteable(object):
@@ -7,20 +10,32 @@ class Deleteable(object):
 
 
 class Searchable(object):
-    def search(self, **kwargs):
+    def _search(self, params):
+        api_resp = self.call('get', self.path + '/', params=params)
+
+        objs = []
+        for obj in api_resp['_embedded'][self.embedded_name]:
+            serializer = self.serializer_class(obj)
+            objs.append(serializer.serialized)
+        self.total_count = api_resp['total_count']
+        return objs
+
+    def search(self, per_page=40, **kwargs):
+        original_kwargs = copy.deepcopy(kwargs)
+        self.per_page = per_page
+        kwargs.update({'limit': self.per_page})
         self.validator = self.validator_class(search_kwargs=kwargs)
         if not self.validator.valid:
             raise InvalidSearchArgumentsException(self.validator)
         if self.__class__.__name__ == 'Route':
             # Routes are special, and need to be requested with additional params
             kwargs.update({'field_set': 'detailed'})
-        api_resp = self.call('get', self.path + '/', params=kwargs)
-
-        objs = []
-        for obj in api_resp['_embedded'][self.embedded_name]:
-            serializer = self.serializer_class(obj)
-            objs.append(serializer.serialized)
-        return objs
+        #
+        # This feels a little hacky but, we need to make the initial call
+        # to the API to get the total count needed to process pages
+        #
+        initial_object_list = self._search(kwargs)
+        return Paginator(initial_object_list, self.per_page, self.total_count, self, original_kwargs)
 
 
 class Createable(object):

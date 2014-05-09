@@ -154,8 +154,9 @@ class WorkoutTest(MapMyFitnessTestCase):
         dt = datetime.datetime(2014, 1, 9, 10, 0, 0)
         dt2 = datetime.datetime(2014, 1, 9, 11, 0, 0)
 
-        workouts = self.mmf.workout.search(user=9118466, started_after=dt, started_before=dt2)
-        workout = workouts[0]
+        workouts_paginator = self.mmf.workout.search(user=9118466, started_after=dt, started_before=dt2)
+        the_page = workouts_paginator.page(1)
+        workout = the_page.object_list[0]
         time_series = workout.time_series
         time_series_again = workout.time_series  # Get the time_series from the _time_series attr
 
