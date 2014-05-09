@@ -31,3 +31,5 @@ class PaginationTest(MapMyFitnessTestCase):
                                 workouts_paginator.page, 'lobster')
         self.assertRaisesRegexp(EmptyPage, 'That page number is less than 1',
                                 workouts_paginator.page, -1)
+        self.assertRaisesRegexp(EmptyPage, 'That page contains no results',
+                                workouts_paginator.page, 2)
