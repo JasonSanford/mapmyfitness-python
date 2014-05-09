@@ -56,7 +56,7 @@ class Paginator(object):
     num_pages = property(_get_num_pages)
 
     def _get_page_range(self):
-        return range(1, self.num_pages + 1)
+        return list(range(1, self.num_pages + 1))
     page_range = property(_get_page_range)
 
 
