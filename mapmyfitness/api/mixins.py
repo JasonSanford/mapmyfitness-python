@@ -37,6 +37,7 @@ class Searchable(object):
         initial_object_list = self._search(kwargs)
         return Paginator(initial_object_list, self.per_page, self.total_count, self, original_kwargs)
 
+
 class Createable(object):
     def create(self, obj):
         self.validator = self.validator_class(create_obj=obj)

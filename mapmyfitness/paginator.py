@@ -2,6 +2,7 @@ import collections
 import copy
 from math import ceil
 
+
 class InvalidPage(Exception):
     pass
 
@@ -55,7 +56,7 @@ class Paginator(object):
         return self._get_page(objects, number, self)
 
     def _get_page(self, *args, **kwargs):
-          return Page(*args, **kwargs)
+            return Page(*args, **kwargs)
 
     def _get_count(self):
         return self.total_count
