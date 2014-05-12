@@ -67,7 +67,7 @@ Implements behaviors: [find](#find), [search](#search), [create](#create), [dele
 * `id` - int - The unique id of the route
 * `name` - str - The name of the route
 * `description` - str - A description of the route
-* `privacty` - str - The privacy setting of the route - one of 'Private', 'Friends' or 'Pulic'
+* `privacy` - str - The privacy setting of the route - one of 'Private', 'Friends' or 'Pulic'
 * `distance` - float - The distance of the route in meters
 * `ascent` - float - The total ascent of the route in meters
 * `descent` - float - The total descent of the route in meters
@@ -101,6 +101,59 @@ routes_paginator = mmf.route.search(close_to_location=[35.555, -80.934], minimum
 ### Workouts
 
 Implements behaviors: [find](#find), [search](#search), [create](#create), [delete](#delete), [update](#update)
+
+#### Search Parameters
+
+* `user` - integer - A user id to find routes for
+* `activity_type` - integer - The id of the [activity type](#activity-types) to find workouts for
+* `updated_before` - datetime - A datetime to find workouts that were updated before
+* `updated_after` - datetime - A datetime to find workouts that were updated after
+* `created_before` - datetime - A datetime to find workouts that were created before
+* `created_after` - datetime - A datetime to find workouts that were created after
+* `started_before` - datetime - A datetime to find workouts that were started before
+* `started_after` - datetime - A datetime to find workouts that were started after
+
+#### Workout Object Properties
+
+* `id` - int - The unique id of the route
+* `name` - str - The name of the route
+* `privacy` - str - The privacy setting of the route - one of 'Private', 'Friends' or 'Pulic'
+* `distance` - float - The distance of the route in meters
+* `start_locale_timezone` - str - The timezone where the workout started
+* `source` - str - The source where the workout was created
+* `has_time_series` - bool - Whether the workout has time series data
+* `start_datetime` - datetime - The datetime of the start of the workout
+* `created_datetime` - datetime - The datetime the workout was created
+* `updated_datetime` - datetime - The datetime the workout was updated
+* `time_series` - list - Time series information for this workout
+* `active_time_total` - int - The total active time (moving time) for the workout in seconds
+* `distance_total` - int - The total distance of the workout in meters
+* `steps_total` - int - The total number of steps for the workout
+* `elapsed_time_total` - int - The total elapsed time (stopped and moving) for the workout
+* `metabolic_energy_total` - int - The total number of calories burned for the workout
+* `speed_max` - float - The max speed for the workout in meters/second
+* `speed_avg` - float - The average speed for the workout in meters/second
+* `route_id` - int - The id of the route of the workout if it is associated with a route
+* `route` - [Route](#routes) - A route object for the route assocated with this workout, if one exists
+* `activity_type_id` - int - The id of the activity type for this workout
+* `activity_type` - [Activity Type](#activity-types) - An activity type object for the activity type of the workout
+
+#### Examples
+
+Find all workouts for a user in the year 2013
+
+```python
+start_datetime = datetime.datetime(2013, 1, 1)
+end_datetime = datetime.datetime(2014, 1, 1)
+
+workouts_paginator = mmf.workout.search(user=9118466, per_page=40, started_after=start_datetime, started_before=end_datetime)
+
+for page_num in workouts_paginator.page_range:
+    the_page = workouts_paginator.page(page_num)
+    print(the_page)  # <Page 1 of 2>
+    for workout in the_page:
+        print(workout.start_datetime)  # 2014-01-02 02:59:53+00:00
+```
 
 ### Users
 
