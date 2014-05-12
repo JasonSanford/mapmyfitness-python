@@ -65,8 +65,9 @@ Implements behaviors: [find](#find), [search](#search), [create](#create), [dele
 #### Route Object Properties
 
 * `id` - int - The unique id of the route
-* `name` - str- The name of the route
-* `description` - str- A description of the route
+* `name` - str - The name of the route
+* `description` - str - A description of the route
+* `privacty` - str - The privacy setting of the route - one of 'Private', 'Friends' or 'Pulic'
 * `distance` - float - The distance of the route in meters
 * `ascent` - float - The total ascent of the route in meters
 * `descent` - float - The total descent of the route in meters
