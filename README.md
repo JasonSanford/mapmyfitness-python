@@ -115,7 +115,7 @@ Implements behaviors: [find](#find), [search](#search), [create](#create), [dele
 
 #### Workout Object Properties
 
-* `id` - int - The unique id of the route
+* `id` - int - The unique id of the workout
 * `name` - str - The name of the route
 * `privacy` - str - The privacy setting of the route - one of 'Private', 'Friends' or 'Pulic'
 * `distance` - float - The distance of the route in meters
@@ -150,18 +150,51 @@ workouts_paginator = mmf.workout.search(user=9118466, per_page=40, started_after
 
 for page_num in workouts_paginator.page_range:
     the_page = workouts_paginator.page(page_num)
-    print(the_page)  # <Page 1 of 2>
     for workout in the_page:
-        print(workout.start_datetime)  # 2014-01-02 02:59:53+00:00
+        print(workout.start_datetime)
 ```
 
 ### Users
 
 Implements behaviors: [find](#find), [search](#search)
 
+#### Search Parameters
+
+* `friends_with` - integer - A user id to find users that are friends with
+
+#### User Object Properties
+
+* `id` - int - The unique id of the user
+* `first_name` - str - The first name of the user
+* `last_name` - str - The last name of the user
+* `username` - str - The username of the user
+* `time_zone` - str - The time zone of the user
+* `gender` - str - The gender of the user
+* `location` - str - The location of the user
+* `last_login_datetime` - datetime - The datetime of the last time the user logged in
+* `join_datetime` - datetime - The datetime of the user joining MapMyFitness
+* `birthdate` - date - The birthdate of the user
+* `email` - str - The email address of the user
+* `display_measurement_system` - str - The preferred measurement system of the user - Either 'metric' or 'imperial'
+* `weight` - float - The weight of the user in kilograms
+* `height` - float - The height of the user in meters
+
+#### User Object Methods
+
+* `get_profile_photo(size='medium')` - str - Returns a url to the profile photo of the user - Size is one of 'small', 'medium' or 'large'
+* `get_friends()` - [Paginator](#paginator-properties) - A pagination object containing friends (users) of the user
+
 ### Activity Types
 
 Implements behaviors: [find](#find)
+
+#### Activity Type Object Properties
+
+* `id` - int - The unique id of the activity type
+* `name` - str - The name of the activity type
+* `has_parent` - bool - Whether the activity type has a parent activity type
+* `root_activity_type_id` - int - The unique id of the root activity type of this activity type
+* `root_activity_type` - [Activity Type](#activity-types) - The root activity type of this activity type
 
 ## Behaviors
 
