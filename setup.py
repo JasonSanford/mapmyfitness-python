@@ -7,7 +7,7 @@ requires = ['requests>=2.1.0']
 
 setup(
     name='mapmyfitness',
-    version='0.1.1',
+    version='0.1.2',
     description='A python wrapper for the MapMyFitness API',
     author='Jason Sanford',
     author_email='jasonsanford@gmail.com',
