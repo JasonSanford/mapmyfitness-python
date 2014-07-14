@@ -35,6 +35,9 @@ class BaseAPI(object):
             kwargs['data'] = json.dumps(data)
 
         if params is not None:
+            if 'close_to_location' in params:
+                coords = map(str, params['close_to_location'])
+                params['close_to_location'] = ','.join(coords)
             kwargs['params'] = params
             for param_key, param_val in params.items():
                 if isinstance(param_val, datetime.datetime):
